@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/paytm");
+const connectDB=async()=>{
+    try{
+        await mongoose.connect(`${process.env.MONGO_URL}`)
+        console.log("database is connected successfully!")
+
+    }
+    catch(err){
+        console.log(err)
+    }
+}
 
 // Create a Schema for Users
 const userSchema = new mongoose.Schema({
