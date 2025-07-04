@@ -10,6 +10,7 @@ import { SendMoney } from "./pages/SendMoney";
 import { Landing } from './pages/Landing';
 import { NotFound }  from './pages/NotFound'
 import { AuthProvider } from "./contexts/AuthContext";
+import Dashboard1 from "./pages/Dashboard1";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/dashboard" element={<Dashboard />}/>
+            <Route path="/dashboard" element={<Dashboard1 />}/>
           </Routes>
        </AuthProvider>
       </BrowserRouter>
