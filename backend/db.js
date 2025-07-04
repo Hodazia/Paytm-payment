@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         maxLength: 50
     }
+
 });
 
 const accountSchema = new mongoose.Schema({
@@ -53,12 +54,13 @@ const accountSchema = new mongoose.Schema({
     }
 });
 
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
 
 module.exports = {
 	User,
-    Account
+    Account,
 };
 
 

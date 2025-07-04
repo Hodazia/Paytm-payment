@@ -1,19 +1,10 @@
-const express= require("express");
-const userRouter = require("./user");
-const accountRouter = require("./account");
+const express = require('express');
+const router = express.Router();
 const { authMiddleware } = require('../middleware');
 const { Account, Transaction } = require('../db');
 const mongoose = require('mongoose');
 
-const router = express.Router();
-
-router.use("/user",userRouter);
-router.use("/account",accountRouter);
-
-/*
-const transactionRouter = express.Router();
-
-transactionRouter.post("/send", authMiddleware, async (req, res) => {
+router.post("/send", authMiddleware, async (req, res) => {
     const session = await mongoose.startSession();
 
     session.startTransaction();
@@ -40,11 +31,11 @@ transactionRouter.post("/send", authMiddleware, async (req, res) => {
     await Account.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
     await Account.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
 
-    await Transaction.create([{
+    await Transaction.create({
         sender: req.userId,
         receiver: to,
         amount: amount
-    }], { session });
+    });
 
     await session.commitTransaction();
     res.json({
@@ -53,7 +44,7 @@ transactionRouter.post("/send", authMiddleware, async (req, res) => {
 });
 
 
-transactionRouter.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
     const transactions = await Transaction.find({
         $or: [
             { sender: req.userId },
@@ -65,7 +56,5 @@ transactionRouter.get("/", authMiddleware, async (req, res) => {
     res.json(transactions);
 });
 
-router.use("/transactions", transactionRouter);
-*/
 
-module.exports= router;
+module.exports = router; 
