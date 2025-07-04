@@ -1,0 +1,57 @@
+/* Animated gradient background for hero and CTA sections */
+.animated-gradient-bg {
+  background: linear-gradient(270deg, #7f5af0, #2cb67d, #ff8906, #f25f4c, #16161a);
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease-in-out infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating animation for shapes */
+.float-animate {
+  animation: floatY 4s ease-in-out infinite;
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Fade-in animation for sections */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeInUp 1s forwards;
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Card hover effect */
+.card-hover-effect:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 8px 32px 0 rgba(127,90,240,0.15), 0 1.5px 4px 0 rgba(0,0,0,0.08);
+  transition: all 0.3s cubic-bezier(.4,2,.6,1);
+}
+
+/* Button pop effect */
+.button-pop:hover {
+  transform: scale(1.06) translateY(-2px);
+  filter: brightness(1.1);
+  transition: all 0.2s cubic-bezier(.4,2,.6,1);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(90deg, #7f5af0, #2cb67d, #ff8906);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+} 
