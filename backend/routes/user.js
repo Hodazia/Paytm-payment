@@ -9,6 +9,10 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 
+const app =express();
+app.use(express.json());
+
+
 // Multer storage configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -60,7 +64,21 @@ router.post("/signup", async (req, res) => {
     }
 
     const salt = await bcrypt.genSalt(10);
+    console.log("=== SIGNUP DEBUG ===");
+    console.log("Signup - Original password:", req.body.password);
+    console.log("Signup - Password type:", typeof req.body.password);
+    console.log("Signup - Password length:", req.body.password.length);
+    console.log("Signup - Password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
+    console.log("Signup - Username:", req.body.username);
+    console.log("Signup - FirstName:", req.body.firstName);
+    console.log("Signup - LastName:", req.body.lastName);
+    
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    console.log("Signup - Hashed password:", hashedPassword);
+    
+    // Test the hash immediately
+    const testMatch = await bcrypt.compare(req.body.password, hashedPassword);
+    console.log("Signup - Test match with original password:", testMatch);
 
     const user = await User.create({
         username: req.body.username,
@@ -86,8 +104,15 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
-    const { success } = signinBody.safeParse(req.body);
+    console.log("=== SIGNIN REQUEST DEBUG ===");
+    console.log("Request body:", req.body);
+    console.log("Request headers:", req.headers);
+    console.log("Content-Type:", req.headers['content-type']);
+    
+    const { success, error } = signinBody.safeParse(req.body);
+    console.log("Zod validation success:", success);
     if (!success) {
+        console.log("Zod validation error:", error);
         return res.status(411).json({
             message: "Incorrect inputs"
         });
@@ -97,8 +122,31 @@ router.post("/signin", async (req, res) => {
         username: req.body.username
     });
 
+    console.log("what is the user", user);
     if (user) {
+        // Add detailed debugging
+        console.log("Request password:", req.body.password);
+        console.log("Stored password hash:", user.password);
+        console.log("Password hash length:", user.password.length);
+        console.log("Password hash starts with:", user.password.substring(0, 10));
+        
+        // Test bcrypt.compare with the exact same password that was used during signup
+        console.log("Testing bcrypt.compare...");
+        console.log("Input password type:", typeof req.body.password);
+        console.log("Input password length:", req.body.password.length);
+        console.log("Input password trimmed:", req.body.password.trim());
+        
+        // Let's also test if there are any hidden characters
+        console.log("Input password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
+        
         const isMatch = await bcrypt.compare(req.body.password, user.password);
+        
+        console.log("ismatched or not", isMatch);
+        
+        // Let's also test with trimmed password
+        const isMatchTrimmed = await bcrypt.compare(req.body.password.trim(), user.password);
+        console.log("ismatched with trimmed password:", isMatchTrimmed);
+        
         if (isMatch) {
             const token = jwt.sign({
                 userId: user._id
@@ -141,14 +189,20 @@ router.put("/", authMiddleware, async (req, res) => {
         });
     }
 
-    await User.updateOne(req.body, {
-        id: req.userId
-    })
+    // If password is being updated, hash it first
+    if (req.body.password) {
+        const salt = await bcrypt.genSalt(10);
+        req.body.password = await bcrypt.hash(req.body.password, salt);
+    }
+
+    await User.updateOne(
+        { _id: req.userId },  // Correct query filter
+        { $set: req.body }    // Correct update syntax
+    );
 
     res.json({
         message: "Updated successfully"
     })
-
 });
 
 router.get("/bulk", authMiddleware, async (req, res) => {
@@ -199,4 +253,77 @@ router.post("/upload-profile-picture", authMiddleware, upload.single('profilePic
 });
 
 */
+
+// Test route for debugging password issues
+router.post("/test-password", async (req, res) => {
+    const { username, testPassword } = req.body;
+    
+    const user = await User.findOne({ username });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    
+    console.log("=== PASSWORD TEST DEBUG ===");
+    console.log("Test password:", testPassword);
+    console.log("Stored hash:", user.password);
+    console.log("Test password char codes:", Array.from(testPassword).map(c => c.charCodeAt(0)));
+    
+    const isMatch = await bcrypt.compare(testPassword, user.password);
+    console.log("Test result:", isMatch);
+    
+    res.json({
+        testPassword,
+        storedHash: user.password,
+        isMatch,
+        originalUsername: user.username
+    });
+});
+
+// Debug route to test different passwords
+router.post("/debug-password", async (req, res) => {
+    const { username } = req.body;
+    
+    const user = await User.findOne({ username });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    
+    console.log("=== PASSWORD DEBUG ===");
+    console.log("Username:", username);
+    console.log("Stored hash:", user.password);
+    
+    // Test common passwords
+    const testPasswords = [
+        "joeroot2003",
+        "joeroot",
+        "root2003", 
+        "joe",
+        "root",
+        "123456",
+        "password",
+        "admin",
+        "test",
+        "user"
+    ];
+    
+    for (const testPass of testPasswords) {
+        const isMatch = await bcrypt.compare(testPass, user.password);
+        console.log(`Testing "${testPass}": ${isMatch}`);
+        if (isMatch) {
+            console.log(`FOUND MATCH: "${testPass}"`);
+            return res.json({
+                found: true,
+                originalPassword: testPass,
+                storedHash: user.password
+            });
+        }
+    }
+    
+    res.json({
+        found: false,
+        message: "No common password matched",
+        storedHash: user.password
+    });
+});
+
 module.exports = router;

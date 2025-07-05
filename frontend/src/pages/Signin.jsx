@@ -10,12 +10,15 @@ import { useState } from "react"
 import { Card, CardContent } from '../components/Card';
 import { Wallet } from 'lucide-react';
 import './Landing.css';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Signin = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { login } = useAuth();
+    
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#16161a] via-[#232946] to-[#7f5af0] dark:from-[#16161a] dark:via-[#232946] dark:to-[#7f5af0] transition-colors duration-700">
         <div className="absolute inset-0 bg-black/40 backdrop-blur-md -z-10" />
@@ -43,20 +46,15 @@ export const Signin = () => {
                 }
                 console.log("Attempting sign in with:", { username, password });
                 try {
-                  const response = await axios.post(
-                    `http://localhost:3000/api/v1/user/signin`,
-                    { username, password },
-                    { headers: { 'Content-Type': 'application/json' } }
-                  );
-                  console.log("response", response.data);
-                  localStorage.setItem("token", response.data.token)
-                  navigate("/dashboard")
+                  const success = await login(username, password);
+                  if (success) {
+                    navigate("/dashboard");
+                  } else {
+                    setError("Sign in failed. Please check your credentials and try again.");
+                  }
                 } catch (err) {
                   console.error("Sign in error:", err);
-                  setError(
-                    err?.response?.data?.message ||
-                    "Sign in failed. Please check your credentials and try again."
-                  );
+                  setError("Sign in failed. Please check your credentials and try again.");
                 }
               }}>
                 Sign in

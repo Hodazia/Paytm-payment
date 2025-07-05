@@ -4,19 +4,20 @@ import { Button } from "../components/Button"
 import { Heading } from "../components/Heading"
 import { InputBox } from "../components/InputBox"
 import { SubHeading } from "../components/SubHeading"
-import axios from "axios";
 import { useNavigate } from "react-router-dom"
-import { BACKEND_URL } from "../assets/backurl"
 import { Card, CardContent } from '../components/Card';
 import { Wallet } from 'lucide-react';
 import './Landing.css';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Signup = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { signup } = useAuth();
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#16161a] via-[#232946] to-[#7f5af0] dark:from-[#16161a] dark:via-[#232946] dark:to-[#7f5af0] transition-colors duration-700">
@@ -37,18 +38,25 @@ export const Signup = () => {
               <InputBox onChange={e => setUsername(e.target.value)} placeholder="harkirat@gmail.com" label={"Username"} />
               <InputBox onChange={e => setPassword(e.target.value)} placeholder="123456" label={"Password"} />
             </div>
+            {error && <div className="text-red-500 text-center mt-4">{error}</div>}
             <div className="pt-6">
               <Button className="w-full rounded-full px-8 py-3 text-lg gradient-bg button-pop shadow-xl" onClick={async () => {
-                const response = await axios.post(`${BACKEND_URL}/user/signup`, {
-                  username,
-                  firstName,
-                  lastName,
-                  password
-                });
-
-                console.log("response", response.data);
-                localStorage.setItem("token", response.data.token)
-                navigate("/dashboard")
+                setError("");
+                if (!firstName || !lastName || !username || !password) {
+                  setError("Please fill in all fields.");
+                  return;
+                }
+                try {
+                  const success = await signup(username, password, firstName, lastName);
+                  if (success) {
+                    navigate("/dashboard");
+                  } else {
+                    setError("Sign up failed. Please try again.");
+                  }
+                } catch (err) {
+                  console.error("Sign up error:", err);
+                  setError("Sign up failed. Please try again.");
+                }
               }}>
                 Sign up
               </Button>

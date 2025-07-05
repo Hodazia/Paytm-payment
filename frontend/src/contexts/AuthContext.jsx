@@ -53,7 +53,18 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        const userObj = { id: data.userId, username };
+        // Extract userId from the token (JWT tokens contain user info)
+        let userId = null;
+        try {
+          const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+          userId = tokenPayload.userId;
+        } catch (e) {
+          console.error("Failed to decode token:", e);
+          // Fallback: use a placeholder userId
+          userId = 'user_' + Date.now();
+        }
+        
+        const userObj = { id: userId, username };
         setUser(userObj);
         setToken(data.token);
         localStorage.setItem('token', data.token);
@@ -76,9 +87,11 @@ export const AuthProvider = ({ children }) => {
    * Handles user signup.
    * @param {string} username
    * @param {string} password
+   * @param {string} firstName
+   * @param {string} lastName
    * @returns {Promise<boolean>} True if signup is successful, false otherwise.
    */
-  const signup = async (username, password) => {
+  const signup = async (username, password, firstName, lastName) => {
     try {
       setIsLoading(true);
       const response = await fetch('http://localhost:3000/api/v1/user/signup', {
@@ -86,13 +99,24 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, firstName, lastName }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        const userObj = { id: data.userId, username };
+        // Extract userId from the token (JWT tokens contain user info)
+        let userId = null;
+        try {
+          const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+          userId = tokenPayload.userId;
+        } catch (e) {
+          console.error("Failed to decode token:", e);
+          // Fallback: use a placeholder userId
+          userId = 'user_' + Date.now();
+        }
+        
+        const userObj = { id: userId, username };
         setUser(userObj);
         setToken(data.token);
         localStorage.setItem('token', data.token);

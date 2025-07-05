@@ -56,6 +56,10 @@ const Dashboard1 = () => {
 
   const searchUsers = async () => {
     setIsSearching(true);
+    console.log("=== SEARCH DEBUG ===");
+    console.log("Search query:", searchQuery);
+    console.log("Token:", token);
+    
     try {
       const response = await fetch(`${BACKEND_URL}/user/bulk?filter=${encodeURIComponent(searchQuery)}`, {
         method: 'GET',
@@ -66,8 +70,13 @@ const Dashboard1 = () => {
       });
       const data = await response.json();
       console.log('User search response:', data);
+      console.log('Response status:', response.status);
+      
       if (response.ok) {
         setSearchResults(data.user || []);
+        console.log('Search results set:', data.user || []);
+      } else {
+        console.error('Search failed:', data.message);
       }
     } catch (error) {
       console.error('Error searching users:', error);
@@ -78,6 +87,12 @@ const Dashboard1 = () => {
 
   const handleTransfer = async (e) => {
     e.preventDefault();
+    console.log("=== TRANSFER DEBUG ===");
+    console.log("Selected recipient:", selectedRecipient);
+    console.log("Transfer amount:", transferAmount);
+    console.log("Balance:", balance);
+    console.log("Token:", token);
+    
     if (!selectedRecipient || !transferAmount) {
       console.error("Missing information");
       return;
@@ -96,6 +111,12 @@ const Dashboard1 = () => {
 
     setIsLoading(true);
     try {
+      console.log("Making transfer request to:", `${BACKEND_URL}/account/transfer`);
+      console.log("Request body:", {
+        to: selectedRecipient._id,
+        amount: amount,
+      });
+      
       const response = await fetch(`${BACKEND_URL}/account/transfer`, {
         method: 'POST',
         headers: {
@@ -108,7 +129,10 @@ const Dashboard1 = () => {
         }),
       });
 
+      console.log("Response status:", response.status);
       const data = await response.json();
+      console.log("Response data:", data);
+      
       if (response.ok) {
         console.log("Transfer successful!");
         setTransferAmount('');
