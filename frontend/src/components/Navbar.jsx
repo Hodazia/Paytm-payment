@@ -14,12 +14,15 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <nav className="bg-gradient-to-br
+     from-gray-900 via-blue-900 to-purple-900 
+     opacity-90 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-18 ">
           <Link to="/" className="flex items-center space-x-2">
-            <Wallet className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold gradient-text">VirtualPay</span>
+            <Wallet className="h-8 w-8 text-white bg-gradient-to-br 
+            from-blue-500 to-purple-600 rounded-lg p-1" />
+            <span className="text-2xl font-bold text-white">VirtualPay</span>
           </Link>
           
           <div className="flex items-center space-x-4">

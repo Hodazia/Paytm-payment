@@ -1,8 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-
+const dotenv = require("dotenv");
 const mainRouter = require("./routes/index")
 const app = express();
+dotenv.config();
 
 app.use(express.json());
 app.use(cors());
@@ -11,7 +12,7 @@ const mongoose = require('mongoose');
 
 const connectDB=async()=>{
     try{
-        await mongoose.connect("mongodb+srv://zia23hoda:ziaulhoda@cluster0.kpu02.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+        await mongoose.connect(process.env.MONGO_DB);
         console.log("database is connected successfully!")
 
     }
