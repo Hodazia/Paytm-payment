@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { BACKEND_URL } from '../assets/backurl';
 
 // Create the AuthContext
 const AuthContext = createContext(undefined);
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     console.log("AUTH_DEBUG: Login attempt for username:", username);
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:3000/api/v1/user/signin', {
+      const response = await fetch(`${BACKEND_URL}/user/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ export const AuthProvider = ({ children }) => {
     console.log("AUTH_DEBUG: Signup attempt for username:", username);
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:3000/api/v1/user/signup', {
+      const response = await fetch(`${BACKEND_URL}/user/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

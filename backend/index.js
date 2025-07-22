@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 const mongoose = require('mongoose');
+const PORT = process.env.PORT || 3000; 
 
 const connectDB=async()=>{
     try{
@@ -24,7 +25,7 @@ const connectDB=async()=>{
 connectDB();
 app.use("/api/v1/", mainRouter); // every request after api/v1/ shall be handled by the mainrouter from the routes/index.js file
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`we are listening 3000`);
 })
 
