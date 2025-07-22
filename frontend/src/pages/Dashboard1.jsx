@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/Card';
-import { Wallet, Search, Send, Users, DollarSign, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Sparkles, Wallet, Search, Send, Users, DollarSign,
+  TrendingUp, Zap, Star, Award, Target, ArrowUpRight, ArrowDownLeft, CheckCircle, XCircle } from 'lucide-react'; // Import CheckCircle and XCircle for icons
 import Navbar from '../components/Navbar';
 import { BACKEND_URL } from '../assets/backurl';
 import './Landing.css';
@@ -49,6 +50,23 @@ const Dashboard1 = () => {
       setIsSearching(false); // Stop loading spinner if query is empty
     }
   }, [searchQuery, token]); // Add token to dependencies for searchUsers
+
+  // Effect to clear success/error messages after a delay
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000); // Clear success message after 5 seconds
+      return () => clearTimeout(timer);
+    }
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 7000); // Clear error message after 7 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, errorMessage]);
+
 
   const fetchBalance = async () => {
     console.log('DASHBOARD_DEBUG: fetchBalance called. Token:', token ? 'Present' : 'Missing');
@@ -179,7 +197,7 @@ const Dashboard1 = () => {
       console.log("DASHBOARD_DEBUG: Transfer Response data:", data);
       
       if (response.ok) {
-        setSuccessMessage('Send money successful!');
+        setSuccessMessage(`Successfully sent $${amount.toFixed(2)} to ${selectedRecipient.username}!`);
         setErrorMessage(''); // Clear any previous error
         setTransferAmount('');
         setSelectedRecipient(null);
@@ -227,6 +245,24 @@ const Dashboard1 = () => {
             <Sparkles className="h-4 w-4 animate-pulse" />
           </div>
         </div>
+
+        {/* Success and Error Messages */}
+        {(successMessage || errorMessage) && (
+          <div className="fixed top-4 right-4 z-50 animate-slide-in-right">
+            {successMessage && (
+              <div className="flex items-center bg-green-500 text-white p-4 rounded-lg shadow-lg mb-2 transform transition-all duration-300 hover:scale-105">
+                <CheckCircle className="h-6 w-6 mr-3" />
+                <p className="font-semibold">{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="flex items-center bg-red-500 text-white p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105">
+                <XCircle className="h-6 w-6 mr-3" />
+                <p className="font-semibold">{errorMessage}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-8 animate-fade-in">
           {/* Balance Card */}
@@ -299,10 +335,10 @@ const Dashboard1 = () => {
               <CardContent className="space-y-6 p-6">
                 {/* User Search */}
                 <div className="space-y-3">
-                  <Label htmlFor="search" className="text-gray-200 font-medium">Search Recipients</Label>
+                  <label htmlFor="search" className="text-gray-200 font-medium">Search Recipients</label>
                   <div className="relative group">
                     <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-400 transition-colors" />
-                    <Input
+                    <input
                       id="search"
                       type="text"
                       placeholder="Search by username..."
@@ -378,10 +414,10 @@ const Dashboard1 = () => {
                 {/* Transfer Form */}
                 <form onSubmit={handleTransfer} className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="amount" className="text-gray-200 font-medium">Amount</Label>
+                    <label htmlFor="amount" className="text-gray-200 font-medium">Amount</label>
                     <div className="relative group">
                       <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6 group-focus-within:text-green-400 transition-colors" />
-                      <Input
+                      <input
                         id="amount"
                         type="number"
                         step="0.01"
@@ -403,7 +439,7 @@ const Dashboard1 = () => {
                   <Button
                     type="submit"
                     className="w-full h-14 text-xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 hover:from-purple-500 hover:via-pink-500 hover:to-blue-500 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    disabled={!selectedRecipient || !transferAmount || isLoading}
+                    disabled={isTransferButtonDisabled} // Use the consolidated disabled state
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center space-x-3">
@@ -413,7 +449,7 @@ const Dashboard1 = () => {
                     ) : (
                       <div className="flex items-center justify-center space-x-3">
                         <Send className="h-6 w-6" />
-                        <span>Send ${transferAmount || '0.00'}</span>
+                        <span>Send ${parseFloat(transferAmount).toFixed(2) || '0.00'}</span> {/* Ensure amount is formatted */}
                         <Sparkles className="h-5 w-5 animate-pulse" />
                       </div>
                     )}
@@ -428,4 +464,4 @@ const Dashboard1 = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard1;
