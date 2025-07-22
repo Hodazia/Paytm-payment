@@ -230,16 +230,17 @@ const Dashboard1 = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black">
+    <>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 
+    via-purple-900 to-black">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"> 
         <div className="mb-8 text-center animate-fade-in">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-4 animate-scale-in">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-4 animate-scale-in"> {/* Adjusted font sizes */}
             Welcome back, {user?.username}!
           </h1>
-          <p className="text-xl text-gray-300 mb-2">Manage your virtual money and make transfers</p>
-          <div className="flex justify-center items-center space-x-2 text-green-400">
+          <p className="text-lg sm:text-xl text-gray-300 mb-2">Manage your virtual money and make transfers</p> 
             <Sparkles className="h-4 w-4 animate-pulse" />
             <span className="text-sm">Auth Token: Active</span>
             <Sparkles className="h-4 w-4 animate-pulse" />
@@ -248,42 +249,42 @@ const Dashboard1 = () => {
 
         {/* Success and Error Messages */}
         {(successMessage || errorMessage) && (
-          <div className="fixed top-4 right-4 z-50 animate-slide-in-right">
+          <div className="fixed top-4 right-4 z-50 animate-slide-in-right p-2 sm:p-0"> 
             {successMessage && (
-              <div className="flex items-center bg-green-500 text-white p-4 rounded-lg shadow-lg mb-2 transform transition-all duration-300 hover:scale-105">
-                <CheckCircle className="h-6 w-6 mr-3" />
-                <p className="font-semibold">{successMessage}</p>
+              <div className="flex items-center bg-green-500 text-white p-3 sm:p-4 rounded-lg shadow-lg mb-2 transform transition-all duration-300 hover:scale-105"> 
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" /> 
+                <p className="font-semibold text-sm sm:text-base">{successMessage}</p> 
               </div>
             )}
             {errorMessage && (
-              <div className="flex items-center bg-red-500 text-white p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105">
-                <XCircle className="h-6 w-6 mr-3" />
-                <p className="font-semibold">{errorMessage}</p>
+              <div className="flex items-center bg-red-500 text-white p-3 sm:p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"> 
+                <XCircle className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" /> 
+                <p className="font-semibold text-sm sm:text-base">{errorMessage}</p> 
               </div>
             )}
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8 animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 animate-fade-in"> 
           {/* Balance Card */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 text-white shadow-2xl border-0 hover:shadow-purple-500/25 hover:scale-105 transition-all duration-300 animate-scale-in">
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6"> 
+            <Card className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 text-white shadow-2xl border-0 hover:shadow-purple-500/25 hover:scale-105 transition-all duration-300 animate-scale-in p-6 sm:p-8"> {/* Added responsive padding */}
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center justify-between text-xl">
+                <CardTitle className="flex items-center justify-between text-lg sm:text-xl"> 
                   <span className="flex items-center">
-                    <Wallet className="h-6 w-6 mr-2" />
+                    <Wallet className="h-5 w-5 sm:h-6 sm:w-6 mr-2" /> 
                     Your Balance
                   </span>
-                  <Sparkles className="h-6 w-6 animate-pulse" />
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 animate-pulse" /> 
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                  ${balance.toFixed(2)}
+                <div className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r 
+                from-white to-blue-100 bg-clip-text text-transparent"> 
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-white/80 text-sm">
-                    <DollarSign className="h-4 w-4 mr-1" />
+                  <div className="flex items-center text-white/80 text-xs sm:text-sm"> 
+                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 mr-1" /> 
                     Virtual Currency
                   </div>
                   <div className="flex items-center text-green-300 text-xs">
@@ -296,28 +297,31 @@ const Dashboard1 = () => {
 
             {/* Quick Stats */}
             <div className="space-y-4">
-              <Card className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                <CardContent className="flex items-center justify-between p-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-3 bg-green-500/20 rounded-xl backdrop-blur-sm">
-                      <ArrowDownLeft className="h-5 w-5 text-green-400" />
+              <Card className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 p-4 sm:p-6"> {/* Added responsive padding */}
+                <CardContent className="flex items-center justify-between p-0"> 
+                  <div className="flex items-center space-x-2 sm:space-x-3"> 
+                    <div className="p-2 bg-green-500/20 rounded-xl backdrop-blur-sm">
+                      <ArrowDownLeft className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" /> 
                     </div>
                     <div>
                       <p className="text-sm text-gray-300">Available</p>
-                      <p className="font-bold text-white text-lg">${balance.toFixed(2)}</p>
+                      <p className="font-bold text-white text-base sm:text-lg">${balance.toFixed(2)}</p> 
                     </div>
                   </div>
                   <Zap className="h-5 w-5 text-yellow-400 animate-pulse" />
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 backdrop-blur-md border border-pink-300/20 hover:from-pink-500/30 hover:to-purple-500/30 transition-all duration-300 hover:scale-105">
-                <CardContent className="p-4 text-center">
+              <Card className="bg-gradient-to-r from-pink-500/20 
+              to-purple-500/20 backdrop-blur-md border border-pink-300/20 
+              hover:from-pink-500/30 hover:to-purple-500/30 transition-all
+               duration-300 hover:scale-105 p-4 sm:p-6"> 
+                <CardContent className="p-0 text-center"> 
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <Send className="h-4 w-4 text-pink-400" />
                     <span className="text-sm text-gray-300">Ready to Send</span>
                   </div>
-                  <p className="text-pink-300 font-semibold">Transfer Money Instantly</p>
+                  <p className="text-pink-300 font-semibold text-sm sm:text-base">Transfer Money Instantly</p> 
                 </CardContent>
               </Card>
             </div>
@@ -326,29 +330,32 @@ const Dashboard1 = () => {
           {/* Transfer Section */}
           <div className="lg:col-span-2">
             <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 animate-scale-in">
-              <CardHeader className="border-b border-white/10">
-                <CardTitle className="flex items-center text-2xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  <Send className="h-7 w-7 mr-3 text-purple-400" />
+              <CardHeader className="border-b border-white/10 pb-4"> 
+                <CardTitle className="flex items-center text-xl sm:text-2xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> 
+                  <Send className="h-6 w-6 sm:h-7 sm:w-7 mr-2 sm:mr-3 text-purple-400" /> 
                   Send Money
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6 p-6">
+              <CardContent className="space-y-5 sm:space-y-6 p-6"> 
                 {/* User Search */}
-                <div className="space-y-3">
-                  <label htmlFor="search" className="text-gray-200 font-medium">Search Recipients</label>
+                <div className="space-y-2 sm:space-y-3"> 
+                  <label htmlFor="search" className="text-gray-200 font-medium text-sm sm:text-base">Search Recipients</label> 
                   <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-400 transition-colors" />
+                    <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2
+                     text-gray-400 h-5 w-5 group-focus-within:text-purple-400 
+                     transition-colors" /> 
                     <input
                       id="search"
                       type="text"
                       placeholder="Search by username..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/20 focus:border-purple-400 hover:bg-white/15 transition-all duration-300 rounded-xl text-lg"
+                      className="pl-10 sm:pl-12 h-12 sm:h-14 w-full bg-white/10 border-white/20 text-white placeholder:text-gray-400 
+                      focus:bg-white/20 focus:border-purple-400 hover:bg-white/15 transition-all duration-300 rounded-xl text-base sm:text-lg" 
                     />
                     {isSearching && (
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-purple-400 border-t-transparent"></div>
+                      <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2"> {/* Adjusted right */}
+                        <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-purple-400 border-t-transparent"></div> 
                       </div>
                     )}
                   </div>
@@ -364,15 +371,17 @@ const Dashboard1 = () => {
                             setSearchQuery(searchUser.username);
                             setSearchResults([]);
                           }}
-                          className="p-4 hover:bg-white/20 cursor-pointer border-b border-white/10 last:border-b-0 flex items-center space-x-4 transition-all duration-200 hover:scale-[1.02]"
+                          className="p-3 sm:p-4 hover:bg-white/20 cursor-pointer border-b border-white/10 
+                          last:border-b-0 flex items-center space-x-3 sm:space-x-4 
+                          transition-all duration-200 hover:scale-[1.02]" 
                           style={{ animationDelay: `${index * 0.1}s` }}
                         >
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
-                            <Users className="h-6 w-6 text-purple-400" />
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20"> {/* Adjusted size */}
+                            <Users className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" /> {/* Adjusted icon size */}
                           </div>
                           <div className="flex-1">
-                            <p className="font-semibold text-white text-lg">{searchUser.username}</p>
-                            <p className="text-sm text-gray-300">Click to select recipient</p>
+                            <p className="font-semibold text-white text-base sm:text-lg">{searchUser.username}</p> 
+                            <p className="text-xs sm:text-sm text-gray-300">Click to select recipient</p> 
                           </div>
                           <ArrowUpRight className="h-4 w-4 text-purple-400 opacity-60" />
                         </div>
@@ -383,27 +392,29 @@ const Dashboard1 = () => {
 
                 {/* Selected Recipient */}
                 {selectedRecipient && (
-                  <div className="p-5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-300/30 backdrop-blur-sm animate-scale-in">
+                  <div className="p-4 sm:p-5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl 
+                  border border-purple-300/30 backdrop-blur-sm animate-scale-in"> 
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
-                          <Users className="h-6 w-6 text-white" />
+                      <div className="flex items-center space-x-3 sm:space-x-4"> 
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 to-pink-600 
+                        rounded-full flex items-center justify-center shadow-lg"> 
+                          <Users className="h-5 w-5 sm:h-6 sm:w-6 text-white" /> 
                         </div>
                         <div>
                           <p className="font-medium text-gray-300 text-sm">Sending to:</p>
-                          <p className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                          <p className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> 
                             {selectedRecipient.username}
                           </p>
                         </div>
                       </div>
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="sm" // 'sm' size for mobile fit
                         onClick={() => {
                           setSelectedRecipient(null);
                           setSearchQuery('');
                         }}
-                        className="text-gray-300 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200"
+                        className="text-gray-300 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200 text-xs sm:text-sm" 
                       >
                         Change
                       </Button>
@@ -412,11 +423,13 @@ const Dashboard1 = () => {
                 )}
 
                 {/* Transfer Form */}
-                <form onSubmit={handleTransfer} className="space-y-6">
-                  <div className="space-y-3">
-                    <label htmlFor="amount" className="text-gray-200 font-medium">Amount</label>
+                <form onSubmit={handleTransfer} className="space-y-5 sm:space-y-6"> 
+                  <div className="space-y-2 sm:space-y-3"> 
+                    <label htmlFor="amount" className="text-gray-200 font-medium text-sm sm:text-base">Amount</label> 
                     <div className="relative group">
-                      <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6 group-focus-within:text-green-400 transition-colors" />
+                      <DollarSign className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 
+                      text-gray-400 h-6 w-6 group-focus-within:text-green-400 
+                      transition-colors" /> 
                       <input
                         id="amount"
                         type="number"
@@ -426,11 +439,14 @@ const Dashboard1 = () => {
                         placeholder="0.00"
                         value={transferAmount}
                         onChange={(e) => setTransferAmount(e.target.value)}
-                        className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/20 focus:border-green-400 hover:bg-white/15 transition-all duration-300 rounded-xl text-xl font-semibold"
+                        className="pl-10 sm:pl-12 h-12 sm:h-14 w-full bg-white/10 border-white/20
+                         text-white placeholder:text-gray-400 focus:bg-white/20 
+                         focus:border-green-400 hover:bg-white/15 transition-all duration-300
+                          rounded-xl text-lg sm:text-xl font-semibold" 
                         required
                       />
                     </div>
-                    <p className="text-sm text-gray-300 flex items-center justify-between">
+                    <p className="text-xs sm:text-sm text-gray-300 flex items-center justify-between">  
                       <span>Available balance: ${balance.toFixed(2)}</span>
                       <span className="text-green-400 font-medium">Ready to transfer</span>
                     </p>
@@ -438,19 +454,22 @@ const Dashboard1 = () => {
 
                   <Button
                     type="submit"
-                    className="w-full h-14 text-xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 hover:from-purple-500 hover:via-pink-500 hover:to-blue-500 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    disabled={isTransferButtonDisabled} // Use the consolidated disabled state
+                    className="w-full h-12 sm:h-14 text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 
+                    to-blue-600 hover:from-purple-500 hover:via-pink-500 hover:to-blue-500
+                     text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25
+                      hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    disabled={isTransferButtonDisabled}
                   >
                     {isLoading ? (
-                      <div className="flex items-center justify-center space-x-3">
-                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
+                      <div className="flex items-center justify-center space-x-2 sm:space-x-3"> 
+                        <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent"></div> 
                         <span>Processing Transfer...</span>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center space-x-3">
-                        <Send className="h-6 w-6" />
-                        <span>Send ${parseFloat(transferAmount).toFixed(2) || '0.00'}</span> {/* Ensure amount is formatted */}
-                        <Sparkles className="h-5 w-5 animate-pulse" />
+                      <div className="flex items-center justify-center space-x-2 sm:space-x-3"> 
+                        <Send className="h-5 w-5 sm:h-6 sm:w-6" /> 
+                        <span>Send ${parseFloat(transferAmount).toFixed(2) || '0.00'}</span> 
+                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" /> 
                       </div>
                     )}
                   </Button>
@@ -460,8 +479,8 @@ const Dashboard1 = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    </>
+  )
+}
 
 export default Dashboard1;

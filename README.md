@@ -73,19 +73,19 @@ Open frontend/assets/backurl.js and ensure it's configured to point to your loca
 npm start
 ```
 
-The frontend application will typically open in your browser at http://localhost:3001 (or another available port).
+The frontend application will typically open in your browser at http://localhost:5173 (or another available port).
 
 🚀 **Deployment**  
 The project is designed for separate deployments of the frontend and backend.
 
 **Backend Deployment**.   
-The backend is optimized for deployment on:
+The backend is optimized for deployment on: Render
 
 **Frontend Deployment**  
 The React frontend is deployed on Vercel.com.
 
 ## Features to add
-- Add a transactions schema to check for every transaction who is sending the money to whom, sender-receiver
-- Have a details of total transactions done by the user in the dashboard
-- Download and share the transaction as a proof of their transaction
+- Add a transactions schema to check for every transaction who is sending the money to whom, sender-receiver   
+- Have a details of total transactions done by the user in the dashboard   
+- Download and share the transaction as a proof of their transaction   
 - Have a transaction history of the user in the user dashboard, create a new API for that....
