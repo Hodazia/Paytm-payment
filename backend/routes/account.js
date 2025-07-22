@@ -29,7 +29,7 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 
     // Fetch the accounts within the transaction
     const account = await Account.findOne({ userId: req.userId }).session(session);
-    console.log("From account:", account);
+    // console.log("From account:", account);
 
     if (!account || account.balance < amount) {
         console.log("Insufficient balance or account not found");
@@ -42,7 +42,7 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     }
 
     const toAccount = await Account.findOne({ userId: to }).session(session);
-    console.log("To account:", toAccount);
+    // console.log("To account:", toAccount);
 
     if (!toAccount) {
         console.log("Invalid recipient account");

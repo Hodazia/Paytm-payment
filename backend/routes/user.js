@@ -65,13 +65,13 @@ router.post("/signup", async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     console.log("=== SIGNUP DEBUG ===");
-    console.log("Signup - Original password:", req.body.password);
-    console.log("Signup - Password type:", typeof req.body.password);
-    console.log("Signup - Password length:", req.body.password.length);
-    console.log("Signup - Password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
-    console.log("Signup - Username:", req.body.username);
-    console.log("Signup - FirstName:", req.body.firstName);
-    console.log("Signup - LastName:", req.body.lastName);
+    // console.log("Signup - Original password:", req.body.password);
+    // console.log("Signup - Password type:", typeof req.body.password);
+    // console.log("Signup - Password length:", req.body.password.length);
+    // console.log("Signup - Password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
+    // console.log("Signup - Username:", req.body.username);
+    // console.log("Signup - FirstName:", req.body.firstName);
+    // console.log("Signup - LastName:", req.body.lastName);
     
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     console.log("Signup - Hashed password:", hashedPassword);
@@ -106,8 +106,8 @@ router.post("/signup", async (req, res) => {
 router.post("/signin", async (req, res) => {
     console.log("=== SIGNIN REQUEST DEBUG ===");
     console.log("Request body:", req.body);
-    console.log("Request headers:", req.headers);
-    console.log("Content-Type:", req.headers['content-type']);
+    // console.log("Request headers:", req.headers);
+    // console.log("Content-Type:", req.headers['content-type']);
     
     const { success, error } = signinBody.safeParse(req.body);
     console.log("Zod validation success:", success);
@@ -122,22 +122,22 @@ router.post("/signin", async (req, res) => {
         username: req.body.username
     });
 
-    console.log("what is the user", user);
+    // console.log("what is the user", user);
     if (user) {
         // Add detailed debugging
-        console.log("Request password:", req.body.password);
-        console.log("Stored password hash:", user.password);
-        console.log("Password hash length:", user.password.length);
-        console.log("Password hash starts with:", user.password.substring(0, 10));
+        // console.log("Request password:", req.body.password);
+        // console.log("Stored password hash:", user.password);
+        // console.log("Password hash length:", user.password.length);
+        // console.log("Password hash starts with:", user.password.substring(0, 10));
         
-        // Test bcrypt.compare with the exact same password that was used during signup
-        console.log("Testing bcrypt.compare...");
-        console.log("Input password type:", typeof req.body.password);
-        console.log("Input password length:", req.body.password.length);
-        console.log("Input password trimmed:", req.body.password.trim());
+        // // Test bcrypt.compare with the exact same password that was used during signup
+        // console.log("Testing bcrypt.compare...");
+        // console.log("Input password type:", typeof req.body.password);
+        // console.log("Input password length:", req.body.password.length);
+        // console.log("Input password trimmed:", req.body.password.trim());
         
         // Let's also test if there are any hidden characters
-        console.log("Input password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
+        // console.log("Input password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
         
         const isMatch = await bcrypt.compare(req.body.password, user.password);
         
@@ -263,10 +263,10 @@ router.post("/test-password", async (req, res) => {
         return res.status(404).json({ message: "User not found" });
     }
     
-    console.log("=== PASSWORD TEST DEBUG ===");
-    console.log("Test password:", testPassword);
-    console.log("Stored hash:", user.password);
-    console.log("Test password char codes:", Array.from(testPassword).map(c => c.charCodeAt(0)));
+    // console.log("=== PASSWORD TEST DEBUG ===");
+    // console.log("Test password:", testPassword);
+    // console.log("Stored hash:", user.password);
+    // console.log("Test password char codes:", Array.from(testPassword).map(c => c.charCodeAt(0)));
     
     const isMatch = await bcrypt.compare(testPassword, user.password);
     console.log("Test result:", isMatch);
@@ -279,51 +279,5 @@ router.post("/test-password", async (req, res) => {
     });
 });
 
-// Debug route to test different passwords
-router.post("/debug-password", async (req, res) => {
-    const { username } = req.body;
-    
-    const user = await User.findOne({ username });
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
-    
-    console.log("=== PASSWORD DEBUG ===");
-    console.log("Username:", username);
-    console.log("Stored hash:", user.password);
-    
-    // Test common passwords
-    const testPasswords = [
-        "joeroot2003",
-        "joeroot",
-        "root2003", 
-        "joe",
-        "root",
-        "123456",
-        "password",
-        "admin",
-        "test",
-        "user"
-    ];
-    
-    for (const testPass of testPasswords) {
-        const isMatch = await bcrypt.compare(testPass, user.password);
-        console.log(`Testing "${testPass}": ${isMatch}`);
-        if (isMatch) {
-            console.log(`FOUND MATCH: "${testPass}"`);
-            return res.json({
-                found: true,
-                originalPassword: testPass,
-                storedHash: user.password
-            });
-        }
-    }
-    
-    res.json({
-        found: false,
-        message: "No common password matched",
-        storedHash: user.password
-    });
-});
 
 module.exports = router;
