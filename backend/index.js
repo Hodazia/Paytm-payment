@@ -28,3 +28,6 @@ app.listen(3000, () => {
     console.log(`we are listening 3000`);
 })
 
+/*
+run npm start for production, while run npm dev for development
+*/
