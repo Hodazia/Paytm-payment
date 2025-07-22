@@ -17,10 +17,10 @@ router.get("/balance", authMiddleware, async (req, res) => {
 
 router.post("/transfer", authMiddleware, async (req, res) => {
     console.log("=== TRANSFER REQUEST DEBUG ===");
-    console.log("Request body:", req.body);
-    console.log("User ID:", req.userId);
-    console.log("Amount:", req.body.amount);
-    console.log("To:", req.body.to);
+    // console.log("Request body:", req.body);
+    // console.log("User ID:", req.userId);
+    // console.log("Amount:", req.body.amount);
+    // console.log("To:", req.body.to);
     
     const session = await mongoose.startSession();
 
