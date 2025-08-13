@@ -1,13 +1,20 @@
-const express = require('express');
+
+
+
+import express from "express";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config.js";
+import bcrypt from "bcrypt";
+import path from "path";
+import multer from "multer";
+import zod from "zod"
+import userModel from "../models/usermodel.js";
+import TransactionModel from "../models/transactionmodel.js";
+import AccountModel from "../models/accountmodel.js";
+import { authMiddleware } from "../middleware.js";
+
+
 const router = express.Router();
-const zod = require("zod");
-const { User, Account } = require("../db");
-const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config");
-const { authMiddleware } = require("../middleware");
-const bcrypt = require('bcrypt');
-const multer = require('multer');
-const path = require('path');
 
 const app =express();
 app.use(express.json());
@@ -53,12 +60,12 @@ router.post("/signup", async (req, res) => {
         });
     }
 
-    const existingUser = await User.findOne({
+    const existingUser = await userModel.findOne({
         username: req.body.username
     });
 
     if (existingUser) {
-        return res.status(411).json({
+        return res.status(400).json({
             message: "Email already taken"
         });
     }
@@ -74,13 +81,13 @@ router.post("/signup", async (req, res) => {
     // console.log("Signup - LastName:", req.body.lastName);
     
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    console.log("Signup - Hashed password:", hashedPassword);
+
     
     // Test the hash immediately
     const testMatch = await bcrypt.compare(req.body.password, hashedPassword);
-    console.log("Signup - Test match with original password:", testMatch);
+    // console.log("Signup - Test match with original password:", testMatch);
 
-    const user = await User.create({
+    const user = await userModel.create({
         username: req.body.username,
         password: hashedPassword,
         firstName: req.body.firstName,
@@ -88,14 +95,14 @@ router.post("/signup", async (req, res) => {
     });
     const userId = user._id;
 
-    await Account.create({
+    await AccountModel.create({
         userId,
         balance: 1 + Math.random() * 10000
     });
 
-    const token = jwt.sign({
-        userId
-    }, JWT_SECRET);
+    const token = jwt.sign(
+        { userId: user._id, isAdmin: user.isAdmin || false }
+    , JWT_SECRET);
 
     res.json({
         message: "User created successfully",
@@ -105,7 +112,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/signin", async (req, res) => {
     console.log("=== SIGNIN REQUEST DEBUG ===");
-    console.log("Request body:", req.body);
+    // console.log("Request body:", req.body);
     // console.log("Request headers:", req.headers);
     // console.log("Content-Type:", req.headers['content-type']);
     
@@ -113,12 +120,12 @@ router.post("/signin", async (req, res) => {
     console.log("Zod validation success:", success);
     if (!success) {
         console.log("Zod validation error:", error);
-        return res.status(411).json({
+        return res.status(400).json({
             message: "Incorrect inputs"
         });
     }
 
-    const user = await User.findOne({
+    const user = await userModel.findOne({
         username: req.body.username
     });
 
@@ -148,12 +155,13 @@ router.post("/signin", async (req, res) => {
         console.log("ismatched with trimmed password:", isMatchTrimmed);
         
         if (isMatch) {
-            const token = jwt.sign({
-                userId: user._id
-            }, JWT_SECRET);
+            const token = jwt.sign({ userId: user._id, 
+                isAdmin: user.isAdmin || false },
+                 JWT_SECRET);
 
             res.json({
-                token: token
+                token: token,
+                isAdmin: user.isAdmin || false 
             });
             return;
         }
@@ -166,8 +174,8 @@ router.post("/signin", async (req, res) => {
 
 // User Routes
 router.get("/me", authMiddleware, async (req, res) => {
-    const user = await User.findById(req.userId).select('-password');
-    const account = await Account.findOne({ userId: req.userId });
+    const user = await userModel.findById(req.userId).select('-password');
+    const account = await AccountModel.findOne({ userId: req.userId });
 
     if (!user || !account) {
         return res.status(404).json({ message: "User not found" });
@@ -175,8 +183,8 @@ router.get("/me", authMiddleware, async (req, res) => {
 
     res.json({
         username: user.username,
-        email: user.email,
-        profilePicture: user.profilePicture,
+        firstName:user.firstName,
+        lastName:user.lastName,
         balance: account.balance
     });
 });
@@ -195,7 +203,7 @@ router.put("/", authMiddleware, async (req, res) => {
         req.body.password = await bcrypt.hash(req.body.password, salt);
     }
 
-    await User.updateOne(
+    await userModel.updateOne(
         { _id: req.userId },  // Correct query filter
         { $set: req.body }    // Correct update syntax
     );
@@ -208,16 +216,17 @@ router.put("/", authMiddleware, async (req, res) => {
 router.get("/bulk", authMiddleware, async (req, res) => {
     const filter = req.query.filter || "";
 
-    const users = await User.find({
+    const users = await userModel.find({
         $or: [{
             firstName: {
-                "$regex": filter
+                "$regex": filter, $options: 'i' 
             }
         }, {
             lastName: {
-                "$regex": filter
+                "$regex": filter,$options: 'i' 
             }
-        }]
+        },
+        { username: { $regex: filter, $options: 'i' } }]
     })
 
     res.json({
@@ -258,7 +267,7 @@ router.post("/upload-profile-picture", authMiddleware, upload.single('profilePic
 router.post("/test-password", async (req, res) => {
     const { username, testPassword } = req.body;
     
-    const user = await User.findOne({ username });
+    const user = await userModel.findOne({ username });
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
@@ -280,4 +289,4 @@ router.post("/test-password", async (req, res) => {
 });
 
 
-module.exports = router;
+export const userRouter = router

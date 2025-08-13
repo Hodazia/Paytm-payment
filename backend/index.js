@@ -1,14 +1,18 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const mainRouter = require("./routes/index")
+import mainRouter from "./routes/index.js";
+
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+
 const app = express();
 dotenv.config();
 
 app.use(express.json());
 app.use(cors());
 
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+import createAdmin from "./utils/createAdmin.js";
+
 const PORT = process.env.PORT || 3000; 
 
 const connectDB=async()=>{
@@ -25,7 +29,8 @@ const connectDB=async()=>{
 connectDB();
 app.use("/api/v1/", mainRouter); // every request after api/v1/ shall be handled by the mainrouter from the routes/index.js file
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    await createAdmin();
     console.log(`we are listening 3000`);
 })
 

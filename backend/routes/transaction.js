@@ -1,8 +1,12 @@
-const express = require('express');
+
+
+
+import express from "express";
 const router = express.Router();
-const { authMiddleware } = require('../middleware');
-const { Account, Transaction } = require('../db');
-const mongoose = require('mongoose');
+import { authMiddleware } from "../middleware.js";
+import AccountModel from "../models/accountmodel.js";
+import TransactionModel from "../models/transactionmodel.js";
+import mongoose from "mongoose";
 
 router.post("/send", authMiddleware, async (req, res) => {
     const session = await mongoose.startSession();
@@ -10,7 +14,7 @@ router.post("/send", authMiddleware, async (req, res) => {
     session.startTransaction();
     const { amount, to } = req.body;
 
-    const account = await Account.findOne({ userId: req.userId }).session(session);
+    const account = await AccountModel.findOne({ userId: req.userId }).session(session);
 
     if (!account || account.balance < amount) {
         await session.abortTransaction();
@@ -19,7 +23,7 @@ router.post("/send", authMiddleware, async (req, res) => {
         });
     }
 
-    const toAccount = await Account.findOne({ userId: to }).session(session);
+    const toAccount = await AccountModel.findOne({ userId: to }).session(session);
 
     if (!toAccount) {
         await session.abortTransaction();
@@ -28,10 +32,10 @@ router.post("/send", authMiddleware, async (req, res) => {
         });
     }
 
-    await Account.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
-    await Account.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
+    await AccountModel.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
+    await AccountModel.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
 
-    await Transaction.create({
+    await TransactionModel.create({
         sender: req.userId,
         receiver: to,
         amount: amount
@@ -45,7 +49,7 @@ router.post("/send", authMiddleware, async (req, res) => {
 
 
 router.get("/", authMiddleware, async (req, res) => {
-    const transactions = await Transaction.find({
+    const transactions = await TransactionModel.find({
         $or: [
             { sender: req.userId },
             { receiver: req.userId }
@@ -57,4 +61,25 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 
-module.exports = router; 
+router.get("/history",authMiddleware, async (req,res) => {
+    try {
+        const userId = req.userId; // from authMiddleware
+
+        const transactions = await TransactionModel.find({
+            $or: [
+                { from: userId },
+                { to: userId }
+            ]
+        })
+        .populate("from", "username firstName lastName")
+        .populate("to", "username firstName lastName")
+        .sort({ createdAt: -1 }); // latest first
+
+        res.status(200).json({ transactions });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching transactions", error: error.message });
+    }
+})
+
+
+export const transactionRouter = router

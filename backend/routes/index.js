@@ -1,15 +1,24 @@
-const express= require("express");
-const userRouter = require("./user");
-const accountRouter = require("./account");
-const { authMiddleware } = require('../middleware');
-const { Account, Transaction } = require('../db');
-const mongoose = require('mongoose');
+
+
+
+import mongoose from "mongoose";
+import { authMiddleware,adminMiddleware } from "../middleware.js";
+import express from "express";
+
+
+import  { accountRouter } from "./account.js"
+import  { userRouter } from "./user.js"
+import  adminRouter  from "./admin.js"
+import  { transactionRouter } from "./transaction.js"
+
+
 
 const router = express.Router();
 
 router.use("/user",userRouter);
 router.use("/account",accountRouter);
-
+router.use("/transaction",transactionRouter);
+router.use("/admin",adminRouter);
 /*
 const transactionRouter = express.Router();
 
@@ -68,4 +77,4 @@ transactionRouter.get("/", authMiddleware, async (req, res) => {
 router.use("/transactions", transactionRouter);
 */
 
-module.exports= router;
+export default router
