@@ -8,6 +8,7 @@ import express from 'express';
 import { authMiddleware } from '../middleware.js';
 import AccountModel from '../models/accountmodel.js';
 import mongoose from 'mongoose';
+import TransactionModel from '../models/transactionmodel.js';
 const router = express.Router();
 
 router.get("/balance", authMiddleware, async (req, res) => {
@@ -62,9 +63,22 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     await AccountModel.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
     await AccountModel.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
 
+
+    //U also have to add the transaction data in the transaction schema history so
+    // do that as well!
+
+    await TransactionModel.create([{
+        senderId: req.userId,
+        receiverId: to,
+        amount: amount,
+        status: 'success'
+    }], { session });
+
     // Commit the transaction
     await session.commitTransaction();
     console.log("Transfer completed successfully");
+
+
 
     res.json({
         message: "Transfer successful"

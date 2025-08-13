@@ -65,14 +65,15 @@ router.get("/history",authMiddleware, async (req,res) => {
     try {
         const userId = req.userId; // from authMiddleware
 
+        // either u have sent the transaction or u have received it!
         const transactions = await TransactionModel.find({
             $or: [
-                { from: userId },
-                { to: userId }
+                { senderId: userId },
+                { receiverId: userId }
             ]
         })
-        .populate("from", "username firstName lastName")
-        .populate("to", "username firstName lastName")
+        .populate("senderId", "username firstName lastName")
+        .populate("receiverId", "username firstName lastName")
         .sort({ createdAt: -1 }); // latest first
 
         res.status(200).json({ transactions });

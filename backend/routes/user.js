@@ -12,6 +12,18 @@ import userModel from "../models/usermodel.js";
 import TransactionModel from "../models/transactionmodel.js";
 import AccountModel from "../models/accountmodel.js";
 import { authMiddleware } from "../middleware.js";
+import crypto from "crypto"
+
+// Allowed avatar styles (gender-friendly)
+const allowedStyles = ["avataaars", "notionists", "big-ears"];
+
+// Example seed pools
+const maleSeeds = ["John", "Alex", "Mike", "Robert", "David"];
+const femaleSeeds = ["Sarah", "Emma", "Sophia", "Olivia", "Mia"];
+
+// Default style
+const defaultStyle = "avataaars";
+
 
 
 const router = express.Router();
@@ -87,11 +99,27 @@ router.post("/signup", async (req, res) => {
     const testMatch = await bcrypt.compare(req.body.password, hashedPassword);
     // console.log("Signup - Test match with original password:", testMatch);
 
+        //create a random avatar url, for profileimage, 
+    // Add randomness to avoid collisions
+
+
+    let seedPool;
+    seedPool = [...maleSeeds, ...femaleSeeds]; // mix of both
+   
+    // Pick random seed
+    const seed = seedPool[Math.floor(Math.random() * seedPool.length)];
+    const randomSuffix = crypto.randomBytes(4).toString("hex");
+    const finalSeed = `${seed}${randomSuffix}`;
+   
+    // Generate avatar URL
+    const avatarUrl = `https://api.dicebear.com/7.x/${defaultStyle}/svg?seed=${finalSeed}`;
+
     const user = await userModel.create({
         username: req.body.username,
         password: hashedPassword,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        profileurl:avatarUrl
     });
     const userId = user._id;
 

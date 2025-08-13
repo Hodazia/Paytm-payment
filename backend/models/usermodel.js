@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
         trim: true,
         maxLength: 50
     },
+    profileurl:{
+        type:String,
+        required:true
+    },
     isAdmin: { type: Boolean, default: false } 
 
 },    { timestamps: true });
