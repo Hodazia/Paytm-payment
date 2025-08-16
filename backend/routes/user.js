@@ -1,5 +1,5 @@
 
-
+import { v4 as uuidv4 } from "uuid";
 
 import express from "express";
 import jwt from "jsonwebtoken";
@@ -12,7 +12,8 @@ import userModel from "../models/usermodel.js";
 import TransactionModel from "../models/transactionmodel.js";
 import AccountModel from "../models/accountmodel.js";
 import { authMiddleware } from "../middleware.js";
-import crypto from "crypto"
+import crypto from "crypto";
+import QRCode from "qrcode"
 
 // Allowed avatar styles (gender-friendly)
 const allowedStyles = ["avataaars", "notionists", "big-ears"];
@@ -114,17 +115,26 @@ router.post("/signup", async (req, res) => {
     // Generate avatar URL
     const avatarUrl = `https://api.dicebear.com/7.x/${defaultStyle}/svg?seed=${finalSeed}`;
 
+
+    // now create a qr code also, to save in the DB
+    const qrCodeId = uuidv4(); // or use new mongoose.Types.ObjectId().toString()
+    const qrData = JSON.stringify({ qrCodeId });
+
     const user = await userModel.create({
         username: req.body.username,
         password: hashedPassword,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        profileurl:avatarUrl
+        profileurl:avatarUrl,
+        qrCodeId:qrCodeId,
+        qrData:qrData
     });
-    const userId = user._id;
+    // const userId = user._id;
 
+
+    await user.save();
     await AccountModel.create({
-        userId,
+        userId:user._id,
         balance: 1 + Math.random() * 10000
     });
 
@@ -138,6 +148,9 @@ router.post("/signup", async (req, res) => {
     });
 });
 
+/*
+
+*/
 router.post("/signin", async (req, res) => {
     console.log("=== SIGNIN REQUEST DEBUG ===");
     // console.log("Request body:", req.body);
@@ -157,6 +170,13 @@ router.post("/signin", async (req, res) => {
         username: req.body.username
     });
 
+        // if QR missing, regenerate
+        if (!user.qrCode) {
+                const qrData = JSON.stringify({ userId: user._id });
+                const qrImage = await QRCode.toDataURL(qrData);
+                user.qrCode = qrImage;
+                await user.save();
+            }
     // console.log("what is the user", user);
     if (user) {
         // Add detailed debugging
@@ -213,8 +233,10 @@ router.get("/me", authMiddleware, async (req, res) => {
         username: user.username,
         firstName:user.firstName,
         lastName:user.lastName,
-        balance: account.balance
-    });
+        profileurl:user.profileurl,
+        balance: account.balance,
+        qrCode:user.qrCodeId // add qrCode id too for the backend
+    }); 
 });
 
 router.put("/", authMiddleware, async (req, res) => {
@@ -262,6 +284,8 @@ router.get("/bulk", authMiddleware, async (req, res) => {
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,
+            avatarUrl:user.profileurl,
+            qrCode:user.qrCodeId,
             _id: user._id
         }))
     })
@@ -290,7 +314,6 @@ router.post("/upload-profile-picture", authMiddleware, upload.single('profilePic
 });
 
 */
-
 // Test route for debugging password issues
 router.post("/test-password", async (req, res) => {
     const { username, testPassword } = req.body;

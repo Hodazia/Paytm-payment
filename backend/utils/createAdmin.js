@@ -25,6 +25,7 @@ async function createAdmin() {
         password: hashedPassword,
         firstName: process.env.ADMIN_FIRSTNAME || 'Admin',
         lastName: process.env.ADMIN_LASTNAME || 'User',
+        profileurl:process.env.ADMIN_PROFILEURL,
         isAdmin: true
     });
 

@@ -10,6 +10,7 @@ import  { accountRouter } from "./account.js"
 import  { userRouter } from "./user.js"
 import  adminRouter  from "./admin.js"
 import  { transactionRouter } from "./transaction.js"
+import { QrRouter } from "./qrrouter.js";
 
 
 
@@ -19,6 +20,7 @@ router.use("/user",userRouter);
 router.use("/account",accountRouter);
 router.use("/transaction",transactionRouter);
 router.use("/admin",adminRouter);
+router.use("/qr",QrRouter);
 /*
 const transactionRouter = express.Router();
 

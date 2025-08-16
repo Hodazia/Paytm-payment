@@ -1,2 +1,2 @@
-export const BACKEND_URL = 'https://paytm-payment-1-wim2.onrender.com/api/v1';
+export const BACKEND_URL = 'http://locahost:3000/api/v1';
 

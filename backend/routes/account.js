@@ -22,67 +22,68 @@ router.get("/balance", authMiddleware, async (req, res) => {
 });
 
 router.post("/transfer", authMiddleware, async (req, res) => {
-    console.log("=== TRANSFER REQUEST DEBUG ===");
-    // console.log("Request body:", req.body);
-    // console.log("User ID:", req.userId);
-    // console.log("Amount:", req.body.amount);
-    // console.log("To:", req.body.to);
-    
     const session = await mongoose.startSession();
-
     session.startTransaction();
-    const { amount, to } = req.body;
 
-    // Fetch the accounts within the transaction
-    const account = await AccountModel.findOne({ userId: req.userId }).session(session);
-    // console.log("From account:", account);
+    try {
+        const { amount, to } = req.body;
 
-    if (!account || account.balance < amount) {
-        console.log("Insufficient balance or account not found");
-        console.log("Account balance:", account?.balance);
-        console.log("Requested amount:", amount);
+
+        const senderId = new mongoose.Types.ObjectId(req.userId);
+        const receiverId = new mongoose.Types.ObjectId(to);
+
+        const account = await AccountModel.findOne({ userId: req.userId }).session(session);
+        console.log("Sender account before:", account)
+        if (!account || account.balance < amount) {
+            await session.abortTransaction();
+            return res.status(400).json({ message: "Insufficient balance" });
+        }
+
+        const toAccount = await AccountModel.findOne({ userId: to }).session(session);
+        console.log("Recipient account before:", toAccount);
+
+        if (!toAccount) {
+            await session.abortTransaction();
+            return res.status(400).json({ message: "Invalid account" });
+        }
+
+        // Update balances
+        await AccountModel.updateOne(
+            { userId: req.userId },
+            { $inc: { balance: -amount } },
+            { session }
+        );
+
+        await AccountModel.updateOne(
+            { userId: to },
+            { $inc: { balance: amount } },
+            { session }
+        );
+
+        // Record transaction
+        await TransactionModel.create([{
+            senderId: req.userId,   // make sure this matches schema
+            receiverId: to,         // make sure this matches schema
+            amount,
+            status: "success"
+        }], { session });
+
+        await session.commitTransaction();
+        console.log("✅ Transfer committed");
+
+        const updatedSender = await AccountModel.findOne({ userId: senderId });
+        const updatedReceiver = await AccountModel.findOne({ userId: receiverId });
+
+        console.log("Sender account after:", updatedSender);
+        console.log("Recipient account after:", updatedReceiver);
+
+        res.json({ message: "Transfer successful" });
+    } catch (error) {
         await session.abortTransaction();
-        return res.status(400).json({
-            message: "Insufficient balance"
-        });
+        res.status(500).json({ message: "Transfer failed", error: error.message });
+    } finally {
+        session.endSession();
     }
-
-    const toAccount = await AccountModel.findOne({ userId: to }).session(session);
-    // console.log("To account:", toAccount);
-
-    if (!toAccount) {
-        console.log("Invalid recipient account");
-        await session.abortTransaction();
-        return res.status(400).json({
-            message: "Invalid account"
-        });
-    }
-
-    // Perform the transfer
-    console.log("Performing transfer...");
-    await AccountModel.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
-    await AccountModel.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
-
-
-    //U also have to add the transaction data in the transaction schema history so
-    // do that as well!
-
-    await TransactionModel.create([{
-        senderId: req.userId,
-        receiverId: to,
-        amount: amount,
-        status: 'success'
-    }], { session });
-
-    // Commit the transaction
-    await session.commitTransaction();
-    console.log("Transfer completed successfully");
-
-
-
-    res.json({
-        message: "Transfer successful"
-    });
 });
 
 export const accountRouter = router;

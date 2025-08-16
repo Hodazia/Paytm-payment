@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+      // unique QR id for payments
+  qrCodeId: { type: String, unique: true },
+
+  // store qrData as JSON string (e.g. {"qrCodeId": "..."} )
+  qrData: { type: String },
     isAdmin: { type: Boolean, default: false } 
 
 },    { timestamps: true });

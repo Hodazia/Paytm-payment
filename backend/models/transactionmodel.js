@@ -9,6 +9,7 @@ const transactionSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 
+// each transaction happened at which time!
 const TransactionModel = mongoose.model('Transaction', transactionSchema);
 
 export default TransactionModel
