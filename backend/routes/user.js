@@ -62,6 +62,7 @@ const updateBody = zod.object({
 	password: zod.string().optional(),
     firstName: zod.string().optional(),
     lastName: zod.string().optional(),
+    username:zod.string().email()
 })
 
 // Auth Routes
@@ -235,7 +236,8 @@ router.get("/me", authMiddleware, async (req, res) => {
         lastName:user.lastName,
         profileurl:user.profileurl,
         balance: account.balance,
-        qrCode:user.qrCodeId // add qrCode id too for the backend
+        qrCode:user.qrCodeId, // add qrCode id too for the backend
+        qrData:user.qrData // add qrData, 
     }); 
 });
 

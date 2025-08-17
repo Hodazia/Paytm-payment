@@ -24,7 +24,8 @@ export const ProfilePage = () => {
 
         <div className="relative min-h-screen">
             <DashboardSidebar />
-            <main className="md:ml-80 flex-1 p-6 transition-all duration-300">
+            <main className="md:ml-80 flex flex-1 justify-center items-center p-6
+             transition-all duration-300">
                 <ProfileSection />
                 </main>
         </div>
