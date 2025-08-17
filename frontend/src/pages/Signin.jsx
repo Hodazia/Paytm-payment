@@ -27,7 +27,7 @@ export const Signin = () => {
 
     try {
       setLoading(true);
-      // ✅ Call backend API
+      
       const res = await axios.post(`${BACKEND_URL}/user/signin`, {
         username,
         password,
@@ -36,7 +36,7 @@ export const Signin = () => {
       if (res.data?.token) {
         // Save token in localStorage
         localStorage.setItem("token", res.data.token);
-        navigate("/dashboard");
+        navigate("/dashboard/profile");
       } else {
         setError("Sign up failed. Please try again.");
       }
