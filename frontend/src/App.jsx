@@ -15,6 +15,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { DashboardSidebar } from "./components/dashboard/dashboard-sidebar";
 import { ProfilePage } from "./pages/Profle";
 import { Toaster } from "sonner";
+import { SendMoneyPage } from "./pages/Sendmoneypage";
+import { TransactionPage } from "./pages/TransactionPage";
 
 function App() {
   return (
@@ -35,11 +37,14 @@ function App() {
               <ProfilePage />
             </ProtectedRoute>}/>
             <Route path="/dashboard/transactions" element={<ProtectedRoute>
-              <h1>Transactions send!</h1>
+              <TransactionPage/>
             </ProtectedRoute>}/>
             <Route path="/dashboard/sendmoney" element={<ProtectedRoute>
-              <h1>Send email</h1>
+              <SendMoneyPage />
             </ProtectedRoute>}/>
+            {/* <Route path="/dashboard/scan" element={<ProtectedRoute>
+              <ScanQr />
+            </ProtectedRoute>}/> */}
             {/* <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard1 />

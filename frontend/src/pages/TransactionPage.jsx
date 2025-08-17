@@ -1,6 +1,7 @@
-import { ProfileSection } from "../components/dashboard/profile-section";
-import { DashboardSidebar } from "../components/dashboard/dashboard-sidebar";
-export const ProfilePage = () => {
+import { DashboardSidebar } from "../components/dashboard/dashboard-sidebar"
+import  { Transactions } from "../components/dashboard/Transactions"
+
+export const TransactionPage = () => {
     return (
         <div
       className="min-h-screen"
@@ -22,13 +23,14 @@ export const ProfilePage = () => {
         <div className="absolute top-1/2 right-1/4 w-5 h-5 bg-teal-500 rounded-full opacity-45 transform -rotate-30"></div>
       </div>
 
-        <div className="relative min-h-screen">
+      <div className="relative min-h-screen">
             <DashboardSidebar />
-            <main className="md:ml-80 absolute left-20 p-4
+            <main className="md:ml-80 flex flex-1 justify-center items-center p-6
              transition-all duration-300">
-                <ProfileSection />
+                <Transactions />
                 </main>
         </div>
-    </div>
+      </div>
+
     )
 }
