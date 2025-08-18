@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { TrendingUp,Users,BarChart3,Shield,PieChart,Target,
     DollarSign,Activity,Zap, CreditCard
 
  } from "lucide-react"
 import { ArrowRight } from "lucide-react"
-
+import { Navigate } from "react-router-dom"
 export const Hero = () => {
+  const navigate = useNavigate();
     return (
         <>
         <section className="pt-32 pb-20 px-4 relative overflow-hidden">
@@ -21,7 +22,7 @@ export const Hero = () => {
         />
 
         <div className="absolute inset-0 pointer-events-none">
-          {/* Top left icons */}
+          {/* The icons at the top left */}
           <div className="absolute top-20 left-10 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center transform rotate-12">
             <BarChart3 className="w-6 h-6 text-blue-600" />
           </div>
@@ -29,7 +30,7 @@ export const Hero = () => {
             <TrendingUp className="w-5 h-5 text-green-600" />
           </div>
 
-          {/* Top right icons */}
+          {/* icons at the right */}
           <div className="absolute top-16 right-16 w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center transform -rotate-12">
             <PieChart className="w-7 h-7 text-purple-600" />
           </div>
@@ -37,7 +38,7 @@ export const Hero = () => {
             <Target className="w-5 h-5 text-orange-600" />
           </div>
 
-          {/* Middle left icons */}
+          {/* middle left icons */}
           <div className="absolute top-1/2 left-8 w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center transform rotate-6">
             <DollarSign className="w-6 h-6 text-teal-600" />
           </div>
@@ -45,7 +46,7 @@ export const Hero = () => {
             <Activity className="w-4 h-4 text-red-600" />
           </div>
 
-          {/* Middle right icons */}
+          {/* Middle right  icons */}
           <div className="absolute top-1/2 right-12 w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center transform -rotate-6">
             <Shield className="w-6 h-6 text-indigo-600" />
           </div>
@@ -65,13 +66,15 @@ export const Hero = () => {
         <div className="container mx-auto text-center relative z-10">
           <div className="flex justify-center gap-2 mb-6">
             <div style={{ backgroundColor: "#dcfce7", 
-                color: "#166534", borderColor: "#bbf7d0" }}>
+                color: "#166534", borderColor: "#bbf7d0" }}
+                className="flex items-center justify-center p-1">
               <TrendingUp className="w-3 h-3 mr-1" />
-              Demo Project
+              Track Transactions
             </div>
             <div  style={{ backgroundColor: "#fed7aa",
-                 color: "#c2410c", borderColor: "#fdba74" }}>
-              Full-Stack App
+                 color: "#c2410c", borderColor: "#fdba74" }}
+                 className="text-center p-1">
+              Financial App
             </div>
           </div>
 
@@ -95,10 +98,14 @@ export const Hero = () => {
             <Link href="/dashboard">
               <button
 
-                className="px-8 py-3 text-lg text-white rounded-lg font-medium"
+                className="px-8 py-3 text-lg text-white flex justify-center items-center
+                rounded-lg font-medium"
                 style={{ backgroundColor: "#0891b2" }}
                 onMouseEnter={(e) => (e.target.style.backgroundColor = "#0e7490")}
                 onMouseLeave={(e) => (e.target.style.backgroundColor = "#0891b2")}
+                onClick={() => {
+                  
+                }}
               >
                 View Demo
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -106,12 +113,20 @@ export const Hero = () => {
             </Link>
             <button
 
-              className="px-8 py-3 text-lg bg-transparent rounded-lg font-medium"
-              style={{ borderColor: "#cbd5e1", color: "#475569" }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#f1f5f9")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "transparent")}
+              className="px-8 py-3 text-lg text-white bg-teal-200 
+              rounded-lg font-medium hover:bg-white 
+              hover:text-teal-200"
+              style={{ borderColor: "#cbd5e1" }}
+              // navigate to github repo
+              onClick={() => {
+                console.log("Button clicked")
+                // navigate("https://github.com/Hodazia/Paytm-payment/")
+              }}
             >
+              {/*the github repo u navigate to */}
+              <a href="https://github.com/Hodazia/Paytm-payment/">
               View Code
+              </a>
             </button>
           </div>
 
@@ -126,7 +141,7 @@ export const Hero = () => {
             </div>
             <div className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
-              <span>Tailwind CSS</span>
+              <span>Transactions Dashboard</span>
             </div>
           </div>
         </div>

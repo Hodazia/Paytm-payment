@@ -59,7 +59,7 @@ const signinBody = zod.object({
 })
 
 const updateBody = zod.object({
-	password: zod.string().optional(),
+	// password: zod.string().optional(),
     firstName: zod.string().optional(),
     lastName: zod.string().optional(),
     username:zod.string().email()
@@ -246,22 +246,30 @@ router.get("/me", authMiddleware, async (req, res) => {
 });
 
 router.put("/", authMiddleware, async (req, res) => {
-    const { success } = updateBody.safeParse(req.body);
-    if (!success) {
-        return res.status(411).json({
-            message: "Error while updating information"
-        });
-    }
+    const {firstName,lastName,username} = req.body;
+    // const { parsedData } = updateBody.safeParse(req.body);
+    // console.log("what is parsed  ", parsedData);
+    // if (!parsedData.success) {
+    //     return res.status(411).json({
+    //         message: "Error while updating information"
+    //     });
+    // }
 
     // If password is being updated, hash it first
-    if (req.body.password) {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
-    }
+    // if (parsedData.password) {
+    //     const salt = await bcrypt.genSalt(10);
+    //     req.body.password = await bcrypt.hash(req.body.password, salt);
+    // }
 
     await userModel.updateOne(
         { _id: req.userId },  // Correct query filter
-        { $set: req.body }    // Correct update syntax
+        { $set: 
+            {
+                username:username,
+                firstName:firstName,
+                lastName:lastName
+            }
+         }    // Correct update syntax
     );
 
     res.json({

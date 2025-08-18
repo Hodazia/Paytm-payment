@@ -3,9 +3,10 @@ import { BottomWarning } from "../components/BottomWarning";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../components/Card";
 import { Wallet,CreditCard,DollarSign,TrendingUp,Shield,Zap,
-  BarChart3,
+  BarChart3,Eye,EyeOff, Lock
  } from "lucide-react";
 import axios from "axios"; 
+import { toast } from "sonner";
 
 import { BACKEND_URL } from "../assets/backurl";
 import { Link } from "react-router-dom";
@@ -16,12 +17,15 @@ export const Signin = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSignin = async () => {
     setError("");
     if (!username || !password) {
       setError("Please fill in all fields.");
+      toast.error("Please fill all the fields");
       return;
     }
 
@@ -36,7 +40,10 @@ export const Signin = () => {
       if (res.data?.token) {
         // Save token in localStorage
         localStorage.setItem("token", res.data.token);
-        navigate("/dashboard/profile");
+        toast.success("Signed in successfully! ");
+        setTimeout(()=> {
+          navigate("/dashboard/profile");
+        },1500);
       } else {
         setError("Sign up failed. Please try again.");
       }
@@ -127,31 +134,49 @@ export const Signin = () => {
                 <label htmlFor="email" style={{ color: "#374151" }}>
                   Username
                 </label>
+                <div className="relative">
                 <input
                   id="email"
                   type="email"
                   placeholder="john@example.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="border-gray-300 bg-gray-50 focus:border-blue-500 
-                  focus:ring-blue-500 m-1 p-1"
+                  className="pl-10 pr-12 py-3  w-full
+                   bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
                 />
+                  </div>
+
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="password" style={{ color: "#374151" }}>
                   Password
                 </label>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border-gray-300 bg-gray-50
-                   focus:border-blue-500 focus:ring-blue-500
-                   m-1 p-1"
-                />
+                <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    className="w-full pl-10 pr-12 py-3 
+                    bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Create a password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
             </div>
 

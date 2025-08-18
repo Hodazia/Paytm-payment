@@ -24,17 +24,21 @@ export const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-slate-700 hover:text-slate-900 transition-colors font-medium">
+            <a href="#features" className="text-slate-700 hover:text-slate-900
+             hover:bg-teal-100 transition-colors duration-500 
+            p-1 hover:scale-105 rounded-xl
+             transition-colors font-medium">
               Features
             </a>
-            <a href="#demo" className="text-slate-700 hover:text-slate-900 transition-colors font-medium">
+            <a href="#demo" className="text-slate-700 
+            hover:text-slate-900 
+            hover:bg-teal-100 transition-colors duration-500 
+            p-1 hover:scale-105 rounded-xl
+            font-medium">
               Demo
             </a>
-            <a href="#faq" className="text-slate-700 hover:text-slate-900 transition-colors font-medium">
-              FAQ
-            </a>
             <Link to="/signup">
-              <button className="bg-teal-600 hover:bg-teal-700 
+              <button className="bg-[#0891b2] hover:bg-teal-700 
               text-white px-6 py-2 rounded-lg font-medium">
                 Get Started
               </button>

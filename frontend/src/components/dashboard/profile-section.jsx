@@ -6,6 +6,7 @@ import { User, Mail, Phone, MapPin, Calendar, Shield, CreditCard, Bell } from "l
 import { useState,useEffect } from "react"
 import axios from "axios"
 import { BACKEND_URL } from "../../assets/backurl"
+import { toast } from "sonner"
 
 
 import QRCode from "react-qr-code"
@@ -52,6 +53,7 @@ export function ProfileSection() {
     if (!token) {
       // In a real app, you'd navigate here, e.g., navigate('/');
       console.log('No token found, user not authenticated.');
+      toast.error("User not authenticated ");
       return false;
     }
     return true;
@@ -75,7 +77,7 @@ export function ProfileSection() {
         setProfile(res.data)
         setfirstName(res.data.firstName);
         setlastName(res.data.lastName);
-        setuserName(res.data.userName);
+        setuserName(res.data.username);
         setprofileurl(res.data.profileurl);
 
       } catch (err) {
@@ -99,7 +101,7 @@ export function ProfileSection() {
       {
         firstName:firstName,
         lastName:lastName,
-        userName:userName
+        username:userName // convert it into username , the property is username
       },
       { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
     );
@@ -111,8 +113,10 @@ export function ProfileSection() {
     // } })); // update UI instantly
     setProfile((prev) => ({ ...prev, firstName, lastName, userName }));
     setIsModalOpen(false); // close modal
+    toast.success("Successfully updated the data! ");
     } catch (error) {
       console.error("Profile update failed:", error)
+      toast.error("Profile update failed " );
     }
   }
 
@@ -195,34 +199,45 @@ export function ProfileSection() {
           <input
             type="text"
             placeholder="First Name"
-            className="w-full p-2 border rounded"
+            className="pl-10 pr-12 py-3  w-full
+                   bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
             value={firstName}
             onChange={e => setfirstName(e.target.value)}
           />
           <input
             type="text"
             placeholder="Last Name"
-            className="w-full p-2 border rounded"
+            className="pl-10 pr-12 py-3  w-full
+                   bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
             value={lastName}
             onChange={e => setlastName(e.target.value)}
           />
           <input
             type="email"
             placeholder="Username (Email)"
-            className="w-full p-2 border rounded"
+            className="pl-10 pr-12 py-3  w-full
+                   bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
             value={userName}
             onChange={e => setuserName(e.target.value)}
           />
         </div>
-        <div className="flex justify-end space-x-3 mt-4">
+        <div className="flex justify-center space-x-3 mt-4">
           <button
-            className="px-4 py-2 bg-gray-300 rounded"
+            className="px-4 py-2 bg-teal-50 text-teal-700 hover:bg-teal-500 
+            hover:text-white rounded"
             onClick={() => setIsModalOpen(false)}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-teal-50 text-teal-700 hover:bg-teal-500 
+            hover:text-white rounded"
             onClick={handleUpdate}
           >
             Save

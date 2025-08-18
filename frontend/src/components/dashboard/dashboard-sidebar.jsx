@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { User, CreditCard, ArrowUpRight, Receipt, LogOut, Menu, X
   ,Scan
  } from "lucide-react"
 import axios from "axios"
 import  { toast } from "sonner"
-
+import { Navigate } from "react-router-dom"
 // A helper function to combine Tailwind CSS classes conditionally
 const cn = (...classNames) => classNames.filter(Boolean).join(' ');
 
@@ -17,6 +17,8 @@ const Card = ({ className, children }) => (
   </div>
 );
 
+
+
 export function DashboardSidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [userName, setUserName] = useState('')
@@ -25,6 +27,18 @@ export function DashboardSidebar() {
   const location = useLocation()
   const pathname = location.pathname;
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // remove the token from the localStorage
+    console.log("Logout button clicked ");
+    localStorage.removeItem('token');
+    toast.success("Successfully logged out ! ")
+    setTimeout(() => {
+      navigate("/")
+    },1500);
+    
+  }
   // Check if user is authenticated
   const checkAuth = () => {
     const token = localStorage.getItem('token');
@@ -183,11 +197,7 @@ export function DashboardSidebar() {
             {/* Logout Button */}
             <button
               className="w-full justify-start flex items-center gap-3 p-4 rounded-xl font-medium transition-colors duration-200 text-red-600 hover:text-white hover:bg-red-600 hover:shadow-lg"
-              onClick={() => {
-                // Handle logout logic here, and add a confirmation modal
-                console.log("Logout clicked")
-                // You would typically open a modal here to ask for confirmation
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="h-5 w-5" />
               Logout

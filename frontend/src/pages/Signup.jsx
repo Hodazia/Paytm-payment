@@ -3,12 +3,13 @@ import { BottomWarning } from "../components/BottomWarning";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../components/Card";
 import { Wallet,CreditCard,DollarSign,TrendingUp,Shield,Zap,
-  BarChart3,
+  BarChart3,Eye, EyeOff,Lock
  } from "lucide-react";
 import axios from "axios"; // ✅ using axios only
 import "./Landing.css";
 import { BACKEND_URL } from "../assets/backurl";
 import { Link } from "react-router-dom";
+import  {toast} from "sonner"
 
 export const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -18,12 +19,15 @@ export const Signup = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     setError("");
     if (!firstName || !lastName || !username || !password) {
       setError("Please fill in all fields.");
+      toast.error("Please fill in all the fields ");
       return;
     }
 
@@ -40,9 +44,14 @@ export const Signup = () => {
       if (res.data?.token) {
         // Save token in localStorage
         localStorage.setItem("token", res.data.token);
-        navigate("/signin");
+        setTimeout(()=>{
+          navigate("/signin");
+        },1500)
+        
+        toast.success("Registered successfully ");
       } else {
         setError("Sign up failed. Please try again.");
+        toast.error("Erorr signing in, check again! ");
       }
     } catch (err) {
       console.error("Sign up error:", err);
@@ -106,7 +115,7 @@ export const Signup = () => {
       <div className="flex items-center justify-center min-h-screen p-4 relative z-10">
         <Card className="w-full
          max-w-md mx-auto shadow-2xl border border-gray-200
-         bg-white rounded-2xl overflow-hidden p-2">
+         bg-white rounded-full overflow-hidden p-2">
           <CardContent className="p-8">
             <div className="flex flex-col items-center mb-8">
               <div className="flex items-center space-x-2 mb-4">
@@ -121,7 +130,7 @@ export const Signup = () => {
                 Create Account
               </h1>
               <p className="text-center" style={{ color: "#64748b" }}>
-                Enter your information to create an account
+                Register to create an account
               </p>
             </div>
 
@@ -137,9 +146,9 @@ export const Signup = () => {
                     placeholder="John"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="border-blue-300
-                    focus:border-blue-500 bg-gray-50
-                    focus:ring-blue-500 m-1 p-1"
+                    className="p-2 bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
                   />
                 </div>
                 <div className="space-y-2">
@@ -152,8 +161,9 @@ export const Signup = () => {
                     placeholder="Doe"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="border-gray-300 focus:border-blue-500
-                     focus:ring-blue-500 m-1 p-1 bg-gray-50"
+                    className="p-2 ml-2 bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
                   />
                 </div>
               </div>
@@ -168,9 +178,9 @@ export const Signup = () => {
                   placeholder="john@example.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="border-gray-300 bg-gray-50 
-                  focus:border-blue-500 
-                  focus:ring-blue-500 m-1 p-1"
+                  className="p-2 ml-2 bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 
+                    focus:border-transparent transition-all duration-200"
                 />
               </div>
 
@@ -178,16 +188,29 @@ export const Signup = () => {
                 <label htmlFor="password" style={{ color: "#374151" }}>
                   Password
                 </label>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border-gray-300 bg-gray-50
-                   focus:border-blue-500 focus:ring-blue-500
-                   m-1 p-1"
-                />
+                <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    className="w-full pl-10 pr-12 py-3 
+                    bg-white border border-gray-300 rounded-lg 
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Create a password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
             </div>
 
