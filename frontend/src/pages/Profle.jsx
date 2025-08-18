@@ -22,12 +22,14 @@ export const ProfilePage = () => {
         <div className="absolute top-1/2 right-1/4 w-5 h-5 bg-teal-500 rounded-full opacity-45 transform -rotate-30"></div>
       </div>
 
-        <div className="relative min-h-screen">
-            <DashboardSidebar />
-            <main className="md:ml-80 absolute left-20 p-4
+        <div className="relative flex min-h-screen">
+          <DashboardSidebar />
+
+              <main className="flex-1 w-full md:ml-100 p-4 
              transition-all duration-300">
                 <ProfileSection />
                 </main>
+
         </div>
     </div>
     )

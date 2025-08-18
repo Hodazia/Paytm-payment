@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../Card';
 import {
   Sparkles, Wallet, Search, Send, Users, DollarSign,
@@ -129,6 +128,7 @@ export const SendMoney = () => {
       });
       const data = await response.json();
       if (response.ok) {
+        toast.success("Transfer successful! ")
         setSuccessMessage(`Sent $${amount.toFixed(2)} to ${selectedRecipient.username}!`);
         setTransferAmount('');
         setSelectedRecipient(null);
@@ -142,9 +142,11 @@ export const SendMoney = () => {
         if (balRes.ok) setBalance(balData.balance);
       } else {
         setErrorMessage(data.message || 'Transfer failed');
+        toast.error("Transfer failed!")
       }
     } catch {
       setErrorMessage('Network error. Please try again.');
+      toast.error("Network error, please try again ")
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +157,7 @@ export const SendMoney = () => {
 
   return (
     <>
-    <div className="relative z-10 p-6">
+    <div className="relative z-10 p-6 min-h-screen ">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-2">Welcome back, {user?.username || "User"}!</h1>
           <p className="text-lg text-slate-600">Manage your money and make secure transfers</p>

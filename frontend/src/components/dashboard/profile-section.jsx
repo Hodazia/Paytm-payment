@@ -142,15 +142,18 @@ export function ProfileSection() {
                 <img
                   src={profile.profileurl}
                   alt="Profile"
-                  className="w-20 h-20 rounded-full object-cover border"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-teal-500
+                  shadow-md"
                 />
               ) : (
-                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-slate-200">
+                <div className="w-24 h-24 flex items-center justify-center 
+                rounded-full bg-gradient-to-tr from-teal-500 to-teal-300 text-white text-2xl 
+                font-bold shadow-md">
                   <User className="w-10 h-10 text-slate-500" />
                 </div>
               )}
             </div>
-            <CardTitle className="text-slate-900">
+            <CardTitle className="text-slate-900 text-xl font-semibold">
               {profile?.firstName} {profile?.lastName}
             </CardTitle>
             <div className="flex items-center justify-center mt-2 text-teal-700 text-sm font-medium">
@@ -160,17 +163,18 @@ export function ProfileSection() {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-3 text-slate-700">
+            <div className="flex items-center gap-3 text-slate-700 justify-center">
               <Mail className="w-4 h-4" />
-              <span className="text-sm">{profile.username || "N/A"}</span>
+              <span className="text-sm text-slate-500">{profile.username || "N/A"}</span>
             </div>
-            <div className="flex items-center gap-3 text-slate-700">
+            <div className="flex items-center gap-3 text-slate-700 justify-center">
               <CreditCard className="w-4 h-4" />
-              <span className="text-sm">Balance ${Math.round(profile?.balance?.toFixed(2),2)}</span> {/* Placeholder, no phone in backend yet */}
+              <span className="text-sm text-slate-500">Balance ${Math.round(profile?.balance?.toFixed(2),2)}</span> {/* Placeholder, no phone in backend yet */}
             </div>
             {/* QR Code */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold">Your QR Code</h3>
+          <div className="mt-6 bg-white p-4 rounded-xl shadow-sm text-center">
+            <h3 className="text-lg font-semibold text-slate-600">Your QR Code</h3>
+            <div className="flex justify-center mt-3">
             <img
               src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
                 profile.qrData
@@ -178,6 +182,8 @@ export function ProfileSection() {
               alt="QR Code"
               className="mx-auto mt-2 border-4 border-white rounded-xl"
             />
+            </div>
+
           </div>
 
           {/* Update Profile Button */}

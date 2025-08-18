@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import  { QrReader } from "react-qr-reader";
 // import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "../Card";
-import { Upload } from "lucide-react";
+import { Upload,Camera } from "lucide-react";
 import axios from "axios"
 import { toast } from "sonner";
 import { BACKEND_URL } from "../../assets/backurl"
@@ -64,13 +64,15 @@ export const ScanQr = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4 bg-gray-50">
-      <Card className="w-full max-w-md shadow-lg rounded-2xl">
-        <CardContent className="flex flex-col items-center p-6 space-y-6">
-          <h2 className="text-xl font-semibold">Scan QR to Pay</h2>
+    <div className="flex flex-col items-center justify-center h-screen p-4
+     ">
+      <Card className="w-full max-w-md shadow-2xl rounded-2xl bg-white/90 backdrop-blur-md border border-gray-200">
+        <CardContent className="flex flex-col items-center p-8 space-y-8">
+          <h2 className="text-2xl p-2 font-bold text-gray-800 tracking-tight flex items-center gap-2">
+            <Camera className="w-6 h-6 text-indigo-600"/> Scan QR to Pay</h2>
 
           {/* QR Camera Scanner */}
-          <div className="w-64 h-64 overflow-hidden rounded-xl border-4 border-blue-500">
+          <div className="w-64 h-64 overflow-hidden rounded-2xl border-4 border-blue-500">
             <QrReader
               delay={300}
               onError={handleError}
@@ -79,7 +81,9 @@ export const ScanQr = () => {
             />
           </div>
 
-          <p className="text-sm text-gray-500">Align the QR code inside the frame</p>
+          <p className="text-sm text-gray-500 text-center">
+            Align the QR code inside the frame
+            </p>
 
           {/* Upload QR */}
           {/* ✅ Upload QR */}
@@ -92,7 +96,10 @@ export const ScanQr = () => {
           />
           <label
             htmlFor="qr-upload"
-            className="w-full flex items-center justify-center gap-2 border rounded-lg p-2 cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 border rounded-lg
+             px-4 py-3 bg-teal-600 text-white font-medium rounded-xl shadow-md 
+             hover:bg-teal-700 
+             transition-all cursor-pointer"
           >
             <Upload size={18} /> Upload QR from Gallery
           </label>
