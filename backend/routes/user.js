@@ -158,27 +158,31 @@ router.post("/signin", async (req, res) => {
     // console.log("Request headers:", req.headers);
     // console.log("Content-Type:", req.headers['content-type']);
     
-    const { success, error } = signinBody.safeParse(req.body);
-    console.log("Zod validation success:", success);
-    if (!success) {
+    const parsed  = signinBody.safeParse(req.body);
+    console.log("Zod validation success:", parsed.success);
+    if (!parsed.success) {
         console.log("Zod validation error:", error);
         return res.status(400).json({
             message: "Incorrect inputs"
         });
     }
+    const {username,password} = parsed.data
 
     const user = await userModel.findOne({
-        username: req.body.username
+        username
     });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-        // if QR missing, regenerate
-        if (!user.qrCode) {
-                const qrData = JSON.stringify({ userId: user._id });
-                const qrImage = await QRCode.toDataURL(qrData);
-                user.qrCode = qrImage;
-                await user.save();
-            }
-    // console.log("what is the user", user);
+        // // if QR missing, regenerate
+        // if (!user.qrCodeId) {
+        //         const qrData = JSON.stringify({ userId: user._id });
+        //         const qrImage = await QRCode.toDataURL(qrData);
+        //         user.qrCodeId = qrImage;
+        //         await user.save();
+        //     }
+     console.log("what is the user", user);
     if (user) {
         // Add detailed debugging
         // console.log("Request password:", req.body.password);
@@ -195,7 +199,7 @@ router.post("/signin", async (req, res) => {
         // Let's also test if there are any hidden characters
         // console.log("Input password char codes:", Array.from(req.body.password).map(c => c.charCodeAt(0)));
         
-        const isMatch = await bcrypt.compare(req.body.password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         
         console.log("ismatched or not", isMatch);
         

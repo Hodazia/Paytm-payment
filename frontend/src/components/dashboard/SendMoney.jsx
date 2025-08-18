@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { BACKEND_URL } from '../../assets/backurl';
+import { useSearchParams } from 'react-router-dom';
 
 export const SendMoney = () => {
   const [balance, setBalance] = useState(0);
@@ -19,10 +20,41 @@ export const SendMoney = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const [searchParams] = useSearchParams();
+  const qrParam = searchParams.get("qr"); // query parameter remember
   // 🔑 Pull user & token from localStorage
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user'));
 
+  useEffect(() => {
+    const resolveQr = async () => {
+      if (!qrParam || !token) return;
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/qr/resolve`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ qrData: 
+            JSON.stringify({ qrCodeId: qrParam }) }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setSelectedRecipient(data);
+          setSearchQuery(data.username); // pre-fill search box
+        } else {
+          setErrorMessage(data.message || "Invalid QR code");
+        }
+      } catch {
+        setErrorMessage("Network error while resolving QR");
+      }
+    };
+
+    resolveQr();
+  }, [qrParam, token]);
   // ✅ Fetch balance
   useEffect(() => {
     const fetchBalance = async () => {
@@ -191,6 +223,7 @@ export const SendMoney = () => {
                       placeholder="Search by username..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
+                      disabled={!!qrParam} // disable editing if from QR
                       className="pl-10 h-12 bg-slate-50 border-slate-200 focus:border-teal-500 focus:ring-teal-500"
                     />
                     {isSearching && (

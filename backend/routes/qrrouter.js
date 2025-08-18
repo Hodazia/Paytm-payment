@@ -6,6 +6,9 @@ import { authMiddleware } from "../middleware.js";
 import userModel from "../models/usermodel.js";
 import AccountModel from "../models/accountmodel.js";
 import TransactionModel from "../models/transactionmodel.js";
+import QrCode from "qrcode-reader"
+import axios from "axios";
+import  { Jimp } from "jimp"
 
 
 const router = express.Router();
@@ -126,6 +129,78 @@ router.post("/pay", authMiddleware, async (req, res) => {
   }
 });
 
+// add a /decode api , to uploaded QR image 
+// (base64 or URL) and returns the decoded JSON (with qrCodeId).
 
+
+router.post("/decode", async (req,res) => {
+  try{
+    const {imageSource} = req.body;
+
+    let buffer;
+    if(imageSource.startsWith("data:image"))
+    {
+       // Base64 string
+       buffer = Buffer.from(imageSource.split(",")[1], "base64");
+    }
+    else{
+            // Image URL
+            const response = await axios.get(imageSource, { responseType: "arraybuffer" });
+            buffer = Buffer.from(response.data, "binary");
+    }
+    const image = await Jimp.read(buffer);
+
+    const qrResult = await new Promise((resolve, reject) => {
+      const qr = new QrCode();
+      qr.callback = (err, value) => {
+        if (err) return reject(err);
+        resolve(value.result);
+      };
+      qr.decode(image.bitmap);
+    });
+
+    const parsed = JSON.parse(qrResult); // should contain { qrCodeId: "xxxx" }
+
+    res.json({ success: true, qrCodeId: parsed.qrCodeId });
+  }
+  catch(e)
+  {
+    // console.error(err);
+    res.status(500).json({ success: false, message: "Failed to decode QR" });
+  }
+})
+
+// Resolve QR -> return user info
+/**
+ Expected Output like this,
+ {
+    "_id": "68a0a1342d6b365c5ed009ca",
+    "username": "zia24hoda@gmail.com",
+    "firstName": "ZIAUL",
+    "lastName": "HODA",
+    "profileurl": "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma28755f85"
+}
+    
+ */
+router.post("/resolve", authMiddleware, async (req, res) => {
+  try {
+    const { qrData } = req.body;
+    if (!qrData) return res.status(400).json({ message: "QR data required" });
+
+    const parsed = JSON.parse(qrData); // { qrCodeId: "..." }
+    const user = await userModel.findOne({ qrCodeId: parsed.qrCodeId }).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      _id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profileurl: user.profileurl
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error resolving QR", error: err.message });
+  }
+});
 
 export const QrRouter = router

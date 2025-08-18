@@ -17,6 +17,7 @@ import { ProfilePage } from "./pages/Profle";
 import { Toaster } from "sonner";
 import { SendMoneyPage } from "./pages/Sendmoneypage";
 import { TransactionPage } from "./pages/TransactionPage";
+import { ScanQRPage } from "./pages/ScanQrPage";
 
 function App() {
   return (
@@ -28,13 +29,11 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/xyz" element={<ProtectedRoute>
-
-              <DashboardSidebar/>
-
-            </ProtectedRoute>}/>
             <Route path="/dashboard/profile" element={<ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>}/>
+            <Route path="/dashboard/scanqr" element={<ProtectedRoute>
+              <ScanQRPage />
             </ProtectedRoute>}/>
             <Route path="/dashboard/transactions" element={<ProtectedRoute>
               <TransactionPage/>

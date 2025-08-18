@@ -40,7 +40,7 @@ export const Signup = () => {
       if (res.data?.token) {
         // Save token in localStorage
         localStorage.setItem("token", res.data.token);
-        navigate("/dashboard");
+        navigate("/signin");
       } else {
         setError("Sign up failed. Please try again.");
       }

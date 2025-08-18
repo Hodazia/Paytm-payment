@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { User, CreditCard, ArrowUpRight, Receipt, LogOut, Menu, X } from "lucide-react"
+import { User, CreditCard, ArrowUpRight, Receipt, LogOut, Menu, X
+  ,Scan
+ } from "lucide-react"
 import axios from "axios"
 import  { toast } from "sonner"
 
@@ -72,6 +74,13 @@ export function DashboardSidebar() {
       href: "/dashboard/profile",
     },
     {
+      id: "scanqr",
+      label: "Scan QR",
+      icon: Scan,
+      description: "Scan the Qr code",
+      href: "/dashboard/scanqr",
+    },
+    {
       id: "transactions",
       label: "Transactions",
       icon: Receipt,
@@ -85,6 +94,7 @@ export function DashboardSidebar() {
       description: "Transfer funds",
       href: "/dashboard/sendmoney",
     },
+
   ]
 
   return (
