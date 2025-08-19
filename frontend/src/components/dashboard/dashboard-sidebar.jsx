@@ -5,7 +5,8 @@ import { User, CreditCard, ArrowUpRight, Receipt, LogOut, Menu, X
  } from "lucide-react"
 import axios from "axios"
 import  { toast } from "sonner"
-import { Navigate } from "react-router-dom"
+import { BACKEND_URL } from "../../assets/backurl"
+
 // A helper function to combine Tailwind CSS classes conditionally
 const cn = (...classNames) => classNames.filter(Boolean).join(' ');
 
@@ -60,7 +61,7 @@ export function DashboardSidebar() {
           Authorization: `Bearer ${localStorage.getItem('token')}`
       }
       }
-      const res = await axios.get(`http://localhost:3000/api/v1/user/me`, options);
+      const res = await axios.get(`${BACKEND_URL}/user/me`, options);
       const fname = res.data.firstName + ' ' + res.data.lastName;
       setFullName(fname);
       setUserName(res.data.username)
