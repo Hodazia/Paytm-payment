@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../Card';
 import {
   Sparkles, Wallet, Search, Send, Users, DollarSign,
-  TrendingUp, Zap, ArrowUpRight, ArrowDownLeft, CheckCircle, XCircle,QrCode
+  TrendingUp, ArrowUpRight, CheckCircle, XCircle,QrCode
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { BACKEND_URL } from '../../assets/backurl';

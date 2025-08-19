@@ -2,6 +2,7 @@ import { BarChart3,TrendingUp,Shield,
     Zap,ArrowRight,Users,
  } from "lucide-react"
  import { Link } from "react-router-dom"
+ import Preview from "../../assets/dashpreview.png"
 
 export const FinalCTA = () => {
     return (
@@ -58,6 +59,21 @@ export const FinalCTA = () => {
               </span>
             </h2>
 
+
+            {/* <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 text-center"> */}
+      
+            {/* The main content container with a max-width for better readability on large screens */}
+            <div className="max-w-4xl mx-auto">
+
+              <img
+                src={Preview}
+                alt="Dashboard illustration"
+                className="w-[90%] md:w-[80%] lg:w-[100%] h-auto rounded-lg shadow-md mx-auto"
+              />
+
+              
+            </div>
+          {/* </div> */}
             <p className="text-xl mb-12 max-w-3xl mx-auto leading-relaxed" style={{ color: "#64748b" }}>
               
             See exactly how our powerful payment recovery app works—without any commitment. Explore a live, 

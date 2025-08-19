@@ -59,28 +59,51 @@ router.get("/", authMiddleware, async (req, res) => {
 
     res.json(transactions);
 });
-
-
-router.get("/history",authMiddleware, async (req,res) => {
+router.get("/history", authMiddleware, async (req, res) => {
     try {
-        const userId = req.userId; // from authMiddleware
-
-        // either u have sent the transaction or u have received it!
-        const transactions = await TransactionModel.find({
-            $or: [
-                { senderId: userId },
-                { receiverId: userId }
-            ]
+      const userId = req.userId; // from authMiddleware
+  
+      // Query params with defaults
+      const page = parseInt(req.query.page) || 1;  // default page = 1
+      const limit = parseInt(req.query.limit) || 10; // default limit = 10
+      const skip = (page - 1) * limit;
+  
+      // Query transactions
+      const [transactions, total] = await Promise.all([
+        TransactionModel.find({
+          $or: [
+            { senderId: userId },
+            { receiverId: userId }
+          ]
         })
-        .populate("senderId", "username firstName lastName")
-        .populate("receiverId", "username firstName lastName")
-        .sort({ createdAt: -1 }); // latest first
-
-        res.status(200).json({ transactions });
+          .populate("senderId", "username firstName lastName profileurl")
+          .populate("receiverId", "username firstName lastName profileurl")
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit),
+        TransactionModel.countDocuments({
+          $or: [
+            { senderId: userId },
+            { receiverId: userId }
+          ]
+        })
+      ]);
+  
+      res.status(200).json({
+        transactions,
+        pagination: {
+          total,                     
+          page,                      
+          limit,                     
+          totalPages: Math.ceil(total / limit)
+        }
+      });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching transactions", error: error.message });
+      res.status(500).json({ 
+        message: "Error fetching transactions", 
+        error: error.message 
+      });
     }
-})
-
+  });
 
 export const transactionRouter = router

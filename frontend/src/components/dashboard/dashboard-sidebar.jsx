@@ -36,7 +36,7 @@ export function DashboardSidebar() {
     toast.success("Successfully logged out ! ")
     setTimeout(() => {
       navigate("/")
-    },1500);
+    },1500)
     
   }
   // Check if user is authenticated

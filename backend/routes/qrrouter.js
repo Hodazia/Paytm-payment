@@ -86,7 +86,7 @@ router.post("/pay", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Invalid receiver account" });
     }
 
-    // ✅ Update balances
+    
     await AccountModel.updateOne(
       { userId: senderId },
       { $inc: { balance: -amount } },
@@ -99,7 +99,7 @@ router.post("/pay", authMiddleware, async (req, res) => {
       { session }
     );
 
-    // ✅ Record transaction
+    
     await TransactionModel.create([{
       senderId,
       receiverId,
@@ -110,7 +110,7 @@ router.post("/pay", authMiddleware, async (req, res) => {
     }], { session });
 
 
-     // ✅ Commit changes
+    
      await session.commitTransaction();
 
      const updatedSender = await AccountModel.findOne({ userId: senderId });
@@ -159,7 +159,7 @@ router.post("/decode", async (req,res) => {
       qr.decode(image.bitmap);
     });
 
-    const parsed = JSON.parse(qrResult); // should contain { qrCodeId: "xxxx" }
+    const parsed = JSON.parse(qrResult); // should contain { qrCodeId: "xjvhcj" }
 
     res.json({ success: true, qrCodeId: parsed.qrCodeId });
   }

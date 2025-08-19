@@ -4,9 +4,9 @@ import { TrendingUp,Users,BarChart3,Shield,PieChart,Target,
 
  } from "lucide-react"
 import { ArrowRight } from "lucide-react"
-import { Navigate } from "react-router-dom"
+
 export const Hero = () => {
-  const navigate = useNavigate();
+  
     return (
         <>
         <section className="pt-32 pb-20 px-4 relative overflow-hidden">

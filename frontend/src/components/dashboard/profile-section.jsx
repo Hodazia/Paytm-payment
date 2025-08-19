@@ -1,15 +1,15 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 
+import { Card, CardContent, CardHeader, CardTitle } from 
 "../Card"
 
 
-import { User, Mail, Phone, MapPin, Calendar, Shield, CreditCard, Bell } from "lucide-react"
+import { User, Mail, Shield, CreditCard, } from "lucide-react"
 import { useState,useEffect } from "react"
 import axios from "axios"
 import { BACKEND_URL } from "../../assets/backurl"
 import { toast } from "sonner"
 
 
-import QRCode from "react-qr-code"
+
 
 
 function Modal({ isOpen, onClose, children }) {

@@ -1,34 +1,38 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Search } from "lucide-react";
 import { BACKEND_URL } from "../../assets/backurl";
-
 
 export const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(7); // items per page
+  const [pagination, setPagination] = useState({ totalPages: 1, total: 0 });
+  const [selectedTxn, setselectedTxn] = useState(null);
 
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem("token");
 
+  const fetchTransactions = async (pageNum = 1) => {
+    try {
+      const res = await axios.get(
+        `${BACKEND_URL}/transaction/history?page=${pageNum}&limit=${limit}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setTransactions(res.data.transactions);
+      setFilteredTransactions(res.data.transactions);
+      setPagination(res.data.pagination);
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const res = await axios.get(`${BACKEND_URL}/transaction/history`,
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            }
-        );
-        setTransactions(res.data.transactions);
-        setFilteredTransactions(res.data.transactions);
-      } catch (err) {
-        console.error("Error fetching transactions:", err);
-      }
-    };
-    fetchTransactions();
-  }, []);
+    fetchTransactions(page);
+  }, [page]);
 
   useEffect(() => {
     if (!searchQuery) {
@@ -44,22 +48,16 @@ export const Transactions = () => {
     }
   }, [searchQuery, transactions]);
 
+  // ADD a useffect to fetch /me request
+
+
   return (
     <div className="p-6">
       <div className="bg-white rounded-2xl shadow p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Transactions</h2>
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search by sender or receiver"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <h2 className="text-xl font-semibold">Transactions History</h2>
+          <p className="text-xl font-semibold text-slate-500">All your transaction history</p>
         </div>
 
         {/* Table */}
@@ -75,14 +73,37 @@ export const Transactions = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTransactions.map((txn) => (
-                <tr key={txn._id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">${txn.amount}</td>
+              {filteredTransactions.map((txn,idx) => {
+                // const isSender = txn.senderId._id === userId;
+                const rowBg = idx % 2 === 0 ? "bg-gray-50" : "bg-white";
+
+                return (
+                  <>
+                  <tr key={txn._id} 
+                  className={`${rowBg} border-b hover:bg-teal-50 cursor-pointer transition`}
+                  onClick={()  => setselectedTxn(txn)}>
+                  <td className={`px-4 py-3 font-bold text-lg 
+                      }`}>
+                        ${txn.amount}
+                        </td>
                   <td className="px-4 py-3">
-                    {txn.senderId.firstName} {txn.senderId.lastName}
+                    <div className="flex gap-2 items-center">
+                    <img src={txn.senderId.profileurl} className="object-cover rounded-full w-15 h-15"/>
+                      <div className="flex justify-center items-center">
+                        {txn.senderId.firstName} {txn.senderId.lastName}
+                        </div>
+                      
+                    </div>
+                    
                   </td>
                   <td className="px-4 py-3">
-                    {txn.receiverId.firstName} {txn.receiverId.lastName}
+                  <div className="flex gap-2">
+                    <img src={txn.receiverId.profileurl} className="object-cover rounded-full w-15 h-15"/>
+                      <div className="flex justify-center items-center">
+                        {txn.receiverId.firstName} {txn.receiverId.lastName}
+                        </div>
+                      
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     {txn.status === "success" ? (
@@ -99,7 +120,10 @@ export const Transactions = () => {
                     {new Date(txn.createdAt).toLocaleString()}
                   </td>
                 </tr>
-              ))}
+                
+                  </>
+                )})
+              }
               {filteredTransactions.length === 0 && (
                 <tr>
                   <td colSpan="5" className="text-center py-6 text-gray-500">
@@ -110,7 +134,53 @@ export const Transactions = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center items-center gap-4 mt-6">
+          <button
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page === 1}
+            className="px-4 py-2 rounded-lg border 
+            bg-teal-500
+            text-white disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-gray-600">
+            Page {page} of {pagination.totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(p + 1, pagination.totalPages))}
+            disabled={page === pagination.totalPages}
+            className="px-4 py-2 rounded-lg border bg-teal-500
+            text-white disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+
       </div>
+      {/* Transaction Modal */}
+      {selectedTxn && (
+        <div className="fixed inset-0 flex items-center justify-center bg-transparent
+         bg-opacity-80">
+          <div className="bg-white p-6 rounded-2xl shadow-lg w-96">
+            <h3 className="text-lg font-semibold mb-4">Transaction Details</h3>
+            <p><b>ID:</b> {selectedTxn._id}</p>
+            <p><b>Amount:</b> ${selectedTxn.amount}</p>
+            <p><b>Status:</b> {selectedTxn.status}</p>
+            <p><b>Sender:</b> {selectedTxn.senderId.firstName} {selectedTxn.senderId.lastName}</p>
+            <p><b>Receiver:</b> {selectedTxn.receiverId.firstName} {selectedTxn.receiverId.lastName}</p>
+            <p><b>Date:</b> {new Date(selectedTxn.createdAt).toLocaleString()}</p>
+            <button
+              className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-lg"
+              onClick={() => setselectedTxn(null)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};

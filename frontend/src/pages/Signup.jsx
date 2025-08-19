@@ -2,13 +2,12 @@ import { useState } from "react";
 import { BottomWarning } from "../components/BottomWarning";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../components/Card";
-import { Wallet,CreditCard,DollarSign,TrendingUp,Shield,Zap,
+import { CreditCard,DollarSign,TrendingUp,Shield,Zap,
   BarChart3,Eye, EyeOff,Lock
  } from "lucide-react";
-import axios from "axios"; // ✅ using axios only
+import axios from "axios"; 
 import "./Landing.css";
 import { BACKEND_URL } from "../assets/backurl";
-import { Link } from "react-router-dom";
 import  {toast} from "sonner"
 
 export const Signup = () => {

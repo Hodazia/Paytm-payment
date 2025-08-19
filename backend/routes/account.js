@@ -62,8 +62,8 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 
         // Record transaction
         await TransactionModel.create([{
-            senderId: req.userId,   // make sure this matches schema
-            receiverId: to,         // make sure this matches schema
+            senderId: req.userId,   
+            receiverId: to,         
             amount,
             status: "success"
         }], { session });

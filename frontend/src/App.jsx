@@ -5,14 +5,11 @@ import {
 } from "react-router-dom";
 import { Signup } from "./pages/Signup";
 import { Signin } from "./pages/Signin";
-// import { Dashboard } from "./pages/Dashboard";
-// import { SendMoney } from "./pages/SendMoney";
+
 import { Landing } from './pages/Landing';
 import { NotFound }  from './pages/NotFound'
-// import { AuthProvider } from "./contexts/AuthContext";
-// import Dashboard1 from "./pages/Dashboard1";
+
 import ProtectedRoute from "./components/ProtectedRoute";
-import { DashboardSidebar } from "./components/dashboard/dashboard-sidebar";
 import { ProfilePage } from "./pages/Profle";
 import { Toaster } from "sonner";
 import { SendMoneyPage } from "./pages/Sendmoneypage";
@@ -41,14 +38,6 @@ function App() {
             <Route path="/dashboard/sendmoney" element={<ProtectedRoute>
               <SendMoneyPage />
             </ProtectedRoute>}/>
-            {/* <Route path="/dashboard/scan" element={<ProtectedRoute>
-              <ScanQr />
-            </ProtectedRoute>}/> */}
-            {/* <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard1 />
-              </ProtectedRoute>
-            }/> */}
           </Routes>
        
       </BrowserRouter>
