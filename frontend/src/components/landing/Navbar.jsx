@@ -73,13 +73,6 @@ export const Navbar = () => {
               >
                 Demo
               </a>
-              <a
-                href="#faq"
-                className="text-slate-700 hover:text-slate-900 transition-colors font-medium py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                FAQ
-              </a>
               <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="bg-teal-600 hover:bg-teal-700 text-white w-full mt-2">Get Started</Button>
               </Link>

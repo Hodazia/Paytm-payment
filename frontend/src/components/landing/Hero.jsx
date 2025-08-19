@@ -9,7 +9,7 @@ export const Hero = () => {
   
     return (
         <>
-        <section className="pt-32 pb-20 px-4 relative overflow-hidden">
+        <section className="pt-32 pb-12 px-4 relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-30"
           style={{
@@ -124,9 +124,9 @@ export const Hero = () => {
               }}
             >
               {/*the github repo u navigate to */}
-              <a href="https://github.com/Hodazia/Paytm-payment/">
-              View Code
-              </a>
+              <Link to="/signin">
+              Get Started
+              </Link>
             </button>
           </div>
 

@@ -63,16 +63,7 @@ export const FinalCTA = () => {
             {/* <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 text-center"> */}
       
             {/* The main content container with a max-width for better readability on large screens */}
-            <div className="max-w-4xl mx-auto">
 
-              <img
-                src={Preview}
-                alt="Dashboard illustration"
-                className="w-[90%] md:w-[80%] lg:w-[100%] h-auto rounded-lg shadow-md mx-auto"
-              />
-
-              
-            </div>
           {/* </div> */}
             <p className="text-xl mb-12 max-w-3xl mx-auto leading-relaxed" style={{ color: "#64748b" }}>
               
@@ -81,7 +72,7 @@ export const FinalCTA = () => {
                   </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
-              <Link href="/dashboard">
+              <Link to="/signin">
                 <button
                   className="px-12 py-4 text-xl text-white flex jusitfy-center
                    rounded-xl font-semibold shadow-lg hover:shadow-xl 

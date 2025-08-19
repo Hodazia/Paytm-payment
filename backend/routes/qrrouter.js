@@ -131,44 +131,56 @@ router.post("/pay", authMiddleware, async (req, res) => {
 
 // add a /decode api , to uploaded QR image 
 // (base64 or URL) and returns the decoded JSON (with qrCodeId).
-
-
-router.post("/decode", async (req,res) => {
-  try{
-    const {imageSource} = req.body;
+router.post("/decode", async (req, res) => {
+  try {
+    const { imageSource } = req.body;
+    if (!imageSource) return res.status(400).json({ success: false, message: "imageSource required" });
 
     let buffer;
-    if(imageSource.startsWith("data:image"))
-    {
-       // Base64 string
-       buffer = Buffer.from(imageSource.split(",")[1], "base64");
+    if (imageSource.startsWith("data:image/")) {
+      const base64 = imageSource.split(",")[1];
+      if (!base64) return res.status(400).json({ success: false, message: "Invalid base64 image" });
+      buffer = Buffer.from(base64, "base64");
+    } else {
+      const response = await axios.get(imageSource, { responseType: "arraybuffer" });
+      buffer = Buffer.from(response.data);
     }
-    else{
-            // Image URL
-            const response = await axios.get(imageSource, { responseType: "arraybuffer" });
-            buffer = Buffer.from(response.data, "binary");
-    }
+
     const image = await Jimp.read(buffer);
 
-    const qrResult = await new Promise((resolve, reject) => {
-      const qr = new QrCode();
-      qr.callback = (err, value) => {
-        if (err) return reject(err);
-        resolve(value.result);
-      };
-      qr.decode(image.bitmap);
+    const qrText = await new Promise((resolve, reject) => {
+      try {
+        const qr = new QrCode();
+        qr.callback = (err, value) => {
+          if (err) return reject(err);
+          resolve(value?.result || "");
+        };
+        qr.decode(image.bitmap);
+      } catch (e) {
+        reject(e);
+      }
     });
 
-    const parsed = JSON.parse(qrResult); // should contain { qrCodeId: "xjvhcj" }
+    if (!qrText) return res.status(422).json({ success: false, message: "No QR detected" });
 
-    res.json({ success: true, qrCodeId: parsed.qrCodeId });
-  }
-  catch(e)
-  {
-    // console.error(err);
+    // Accept JSON or plain string
+    let qrCodeId = null;
+    try {
+      const parsed = JSON.parse(qrText);
+      qrCodeId = parsed?.qrCodeId || null;
+    } catch {
+      qrCodeId = qrText?.trim() || null;
+    }
+
+    if (!qrCodeId) return res.status(422).json({ success: false, message: "QR not in expected format" });
+
+    res.json({ success: true, qrCodeId });
+  } catch (err) {
+    console.error("QR decode error:", err?.message);
     res.status(500).json({ success: false, message: "Failed to decode QR" });
   }
-})
+});
+
 
 // Resolve QR -> return user info
 /**

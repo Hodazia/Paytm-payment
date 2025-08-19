@@ -7,7 +7,9 @@ import dotenv from "dotenv";
 const app = express();
 dotenv.config();
 
-app.use(express.json());
+// increase JSON + URL-encoded body size limit to 15mb
+app.use(express.json({ limit: "15mb" }));
+app.use(express.urlencoded({ limit: "15mb", extended: true }));
 app.use(cors());
 
 import mongoose from "mongoose";

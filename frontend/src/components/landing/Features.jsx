@@ -8,6 +8,7 @@ import {
   Smartphone,
   Clock
 } from "lucide-react";
+import Preview from "../../assets/dashpreview.png"
 
 const features = [
   {
@@ -50,11 +51,22 @@ const features = [
 
 export const Features = () => {
   return (
-    <section id="features" className="relative py-24 bg-gradient-to-b from-background to-background/80">
+    <section id="features" className="relative py-24 bg-gradient-to-b 
+    from-background to-background/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+        {/*Image preview */}
+
+
+              <img
+                src={Preview}
+                alt="Dashboard illustration"
+                className="w-[100%] md:w-[90%] lg:w-[100%] h-auto rounded-lg shadow-md mx-auto"
+              />
+
+
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mt-5 mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary mb-6 animate-fade-in">
             <BarChart3 className="w-4 h-4" />
             <span className="text-sm font-medium">Powerful Features</span>

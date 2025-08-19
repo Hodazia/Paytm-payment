@@ -129,7 +129,7 @@ export const SendMoney = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("Transfer successful! ")
-        setSuccessMessage(`Sent $${amount.toFixed(2)} to ${selectedRecipient.username}!`);
+        // setSuccessMessage(`Sent $${amount.toFixed(2)} to ${selectedRecipient.username}!`);
         setTransferAmount('');
         setSelectedRecipient(null);
         setSearchQuery('');
